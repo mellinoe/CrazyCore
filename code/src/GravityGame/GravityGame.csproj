@@ -1,0 +1,54 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), dir.props))\dir.props" />
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <MinimumVisualStudioVersion>14.0</MinimumVisualStudioVersion>
+    <AssemblyName>GravityGame</AssemblyName>
+    <RootNamespace>GravityGame</RootNamespace>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <NuGetTargetMoniker>.NETStandard,Version=v1.6</NuGetTargetMoniker>
+    <OutputPath>$(AssetDir)\Managed</OutputPath>
+    <ProjectGuid>{0068F33A-64B0-4D95-A129-44A02B035503}</ProjectGuid>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' " />
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' " />
+  <ItemGroup>
+    <Compile Include="Elevator.cs" />
+    <Compile Include="GravityInverter.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\ge\ext\imgui.net\src\ImGui.NET\ImGui.NET.csproj">
+      <Project>{2665014F-0FEC-4268-8F77-7B029921AB09}</Project>
+      <Name>ImGui.NET</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\ge\ext\veldrid\src\Veldrid\Veldrid.csproj">
+      <Project>{AE9BC745-284F-42F3-8236-C43FF9731DF2}</Project>
+      <Name>Veldrid</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\ge\ext\veldrid\src\Veldrid.Assets\Veldrid.Assets.csproj">
+      <Project>{881C55C7-0D91-4A87-B47A-46042C6F4CA0}</Project>
+      <Name>Veldrid.Assets</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\ge\src\BEPU\BEPUphysics\BEPUphysics.csproj">
+      <Project>{C0D52C9F-14B8-4008-8DDC-109C27561A5C}</Project>
+      <Name>BEPUphysics</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\ge\src\BEPU\BEPUutilities\BEPUutilities.csproj">
+      <Project>{34853DEA-43A6-4F2F-A379-D1EE04D256D2}</Project>
+      <Name>BEPUutilities</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <None Include="project.json" />
+    <ProjectReference Include="..\..\ge\src\Engine\Engine.csproj">
+      <Project>{9bfba3a1-21d4-4cbd-b0e1-a4f3ab80fd30}</Project>
+      <Name>Engine</Name>
+      <Private>False</Private>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), dir.targets))\dir.targets" />
+</Project>
