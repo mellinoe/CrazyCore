@@ -14,7 +14,6 @@ namespace GravityGame
         private MotionState _currentMotionState = MotionState.WaitingBottom;
         private float _currentSpeed;
         private Collider _collider;
-        private EntityMover _mover;
         private PhysicsSystem _physics;
 
         private enum MotionState { WaitingBottom, MovingUp, WaitingTop, MovingDown }
@@ -23,19 +22,12 @@ namespace GravityGame
         public float AccelerationRate { get; set; } = 1f;
         public float MaxSpeed { get; set; } = 5f;
         public float PauseTime { get; set; } = 2f;
-        public Vector3 UpDirection { get; set; }
+        public Vector3 UpDirection { get; set; } = Vector3.UnitY;
 
         protected override void Start(SystemRegistry registry)
         {
             _physics = registry.GetSystem<PhysicsSystem>();
             _collider = GameObject.GetComponent<Collider>();
-            _mover = new EntityMover(_collider.Entity);
-        }
-
-        protected override void OnEnabled()
-        {
-            base.OnEnabled();
-            _physics.AddObject()
         }
 
         public override void Update(float deltaSeconds)
@@ -69,7 +61,7 @@ namespace GravityGame
                 float maxSpeed = (MaxDisplacement - _currentDisplacement) / deltaSeconds;
                 Vector3 velocity = (_currentMotionState == MotionState.MovingUp ? UpDirection : -UpDirection)
                     * Math.Min(maxSpeed, _currentSpeed);
-                GameObject.GetComponent<Collider>().Entity.LinearVelocity = velocity;
+                _collider.Entity.LinearVelocity = velocity;
                 _currentDisplacement += (velocity * deltaSeconds).Length();
 
                 if (_currentDisplacement >= MaxDisplacement)

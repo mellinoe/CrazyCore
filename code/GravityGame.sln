@@ -3,29 +3,29 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GravityGame", "GravityGame.csproj", "{0068F33A-64B0-4D95-A129-44A02B035503}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GravityGame", "src\GravityGame\GravityGame.csproj", "{0068F33A-64B0-4D95-A129-44A02B035503}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Engine", "Engine", "{82C5DB22-4032-4B68-96A3-E48C8ED49B61}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BEPUutilities", "..\..\ge\src\BEPU\BEPUutilities\BEPUutilities.csproj", "{34853DEA-43A6-4F2F-A379-D1EE04D256D2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BEPUutilities", "ge\src\BEPU\BEPUutilities\BEPUutilities.csproj", "{34853DEA-43A6-4F2F-A379-D1EE04D256D2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BEPUphysics", "..\..\ge\src\BEPU\BEPUphysics\BEPUphysics.csproj", "{C0D52C9F-14B8-4008-8DDC-109C27561A5C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BEPUphysics", "ge\src\BEPU\BEPUphysics\BEPUphysics.csproj", "{C0D52C9F-14B8-4008-8DDC-109C27561A5C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BEPU", "BEPU", "{F2B84E7D-8830-4184-8117-EA3D5A43652D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Engine", "..\..\ge\src\Engine\Engine.csproj", "{9BFBA3A1-21D4-4CBD-B0E1-A4F3AB80FD30}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Engine", "ge\src\Engine\Engine.csproj", "{9BFBA3A1-21D4-4CBD-B0E1-A4F3AB80FD30}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Editor", "..\..\ge\src\Editor\Editor.csproj", "{AE9BC745-284F-569F-82AA-C43AB9425DF2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Editor", "ge\src\Editor\Editor.csproj", "{AE9BC745-284F-569F-82AA-C43AB9425DF2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Engine.Launcher", "..\..\ge\src\Engine.Launcher\Engine.Launcher.csproj", "{9DC5384C-0FBF-4986-BBD4-9DC79F006938}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Engine.Launcher", "ge\src\Engine.Launcher\Engine.Launcher.csproj", "{9DC5384C-0FBF-4986-BBD4-9DC79F006938}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ext", "ext", "{14C050DB-FFEE-4537-B0DE-1F2DB9338495}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Veldrid", "..\..\ge\ext\veldrid\src\Veldrid\Veldrid.csproj", "{AE9BC745-284F-42F3-8236-C43FF9731DF2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Veldrid", "ge\ext\veldrid\src\Veldrid\Veldrid.csproj", "{AE9BC745-284F-42F3-8236-C43FF9731DF2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Veldrid.Assets", "..\..\ge\ext\veldrid\src\Veldrid.Assets\Veldrid.Assets.csproj", "{881C55C7-0D91-4A87-B47A-46042C6F4CA0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Veldrid.Assets", "ge\ext\veldrid\src\Veldrid.Assets\Veldrid.Assets.csproj", "{881C55C7-0D91-4A87-B47A-46042C6F4CA0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImGui.NET", "..\..\ge\ext\imgui.net\src\ImGui.NET\ImGui.NET.csproj", "{2665014F-0FEC-4268-8F77-7B029921AB09}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImGui.NET", "ge\ext\imgui.net\src\ImGui.NET\ImGui.NET.csproj", "{2665014F-0FEC-4268-8F77-7B029921AB09}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

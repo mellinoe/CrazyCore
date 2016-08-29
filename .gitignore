@@ -258,3 +258,6 @@ imgui.ini
 # VC DB Stuff
 *.VC.db
 *.opendb
+
+# Managed Assets
+Assets/Managed
