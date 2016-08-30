@@ -261,3 +261,6 @@ imgui.ini
 
 # Managed Assets
 Assets/Managed
+
+# Publish output
+Published
