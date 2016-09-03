@@ -21,6 +21,14 @@ namespace GravityGame
             _input = registry.GetSystem<InputSystem>();
         }
 
+        protected override void OnDisabled()
+        {
+            if (_gs != null)
+            {
+                _gs.Context.Window.CursorVisible = true;
+            }
+        }
+
         public override void Update(float deltaSeconds)
         {
             Window window = _gs.Context.Window;

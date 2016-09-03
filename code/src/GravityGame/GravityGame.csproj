@@ -18,6 +18,7 @@
     <Compile Include="CursorHider.cs" />
     <Compile Include="Elevator.cs" />
     <Compile Include="GravityInverter.cs" />
+    <Compile Include="LevelLoadTrigger.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\ge\ext\imgui.net\src\ImGui.NET\ImGui.NET.csproj">
