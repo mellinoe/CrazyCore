@@ -14,11 +14,14 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' " />
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' " />
   <ItemGroup>
+    <Compile Include="AudioAutoPlay.cs" />
+    <Compile Include="BallAudio.cs" />
     <Compile Include="BallController.cs" />
     <Compile Include="CursorHider.cs" />
     <Compile Include="Elevator.cs" />
     <Compile Include="GravityInverter.cs" />
     <Compile Include="LevelLoadTrigger.cs" />
+    <Compile Include="MainMenu.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\ge\ext\imgui.net\src\ImGui.NET\ImGui.NET.csproj">

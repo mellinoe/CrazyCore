@@ -1,0 +1,9 @@
+Artist: Alexander
+
+Used under the “Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)” License.
+http://www.orangefreesounds.com/metal-ball-rolling-on-concrete-path/
+
+This file was modified in the following ways:
+* Crossfade end of track
+* Export to 16-bit mono WAVE.
+* Pitch shifted lower.

@@ -96,12 +96,6 @@ namespace GravityGame
                 _yaw -= MathUtil.TwoPi;
             }
 
-            if (mouseDelta.Length() > 0)
-            {
-                Console.WriteLine("YawDiff:" + mouseDelta.X * _cameraTurnSpeed);
-                Console.WriteLine($"Yaw:{_yaw} Pitch:{_pitch}");
-            }
-
             _pitch = MathUtil.Clamp(_pitch, _minPitch, _maxPich);
 
             float wheelDelta = _input.CurrentSnapshot.WheelDelta;

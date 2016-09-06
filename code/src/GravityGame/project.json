@@ -8,6 +8,7 @@
     "System.Console": "4.0.0",
 	  "System.Numerics.Vectors": "4.1.1",
     "System.Runtime.Loader": "4.0.0",
+    "System.Runtime.InteropServices.RuntimeInformation": "4.0.0"
   },
   "buildOptions": {
     "allowUnsafe": true

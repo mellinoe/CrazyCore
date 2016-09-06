@@ -23,6 +23,7 @@ namespace GravityGame
 
         protected override void OnDisabled()
         {
+            base.OnDisabled();
             if (_gs != null)
             {
                 _gs.Context.Window.CursorVisible = true;

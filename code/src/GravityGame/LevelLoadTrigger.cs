@@ -3,6 +3,7 @@ using Engine;
 using Engine.Physics;
 using Veldrid.Assets;
 using Engine.Assets;
+using Engine.Audio;
 
 namespace GravityGame
 {
@@ -10,14 +11,18 @@ namespace GravityGame
     {
         private Collider _collider;
         private SceneLoaderSystem _sls;
-        private AssetSystem _as;
+        private AssetSystem _assetSystem;
+        private AudioSystem _audioSystem;
 
         public AssetRef<SceneAsset> LoadedScene { get; set; }
+        public AssetRef<WaveFile> AudioClip { get; set; }
+        public float Volume { get; set; } = 1.0f;
 
         protected override void Attached(SystemRegistry registry)
         {
-            _as = registry.GetSystem<AssetSystem>();
+            _assetSystem = registry.GetSystem<AssetSystem>();
             _sls = registry.GetSystem<SceneLoaderSystem>();
+            _audioSystem = registry.GetSystem<AudioSystem>();
         }
 
         protected override void Removed(SystemRegistry registry)
@@ -48,7 +53,12 @@ namespace GravityGame
         {
             if (other.GameObject.GetComponent<CharacterMarker>() != null)
             {
-                var scene = _as.Database.LoadAsset(LoadedScene, cache:false);
+                if (AudioClip != null)
+                {
+                    _audioSystem.PlaySound(_assetSystem.Database.LoadAsset(AudioClip), Volume);
+                }
+
+                var scene = _assetSystem.Database.LoadAsset(LoadedScene, cache:false);
                 _sls.LoadScene(scene);
             }
         }
