@@ -19,6 +19,7 @@
     <Compile Include="BallController.cs" />
     <Compile Include="BallPowerup.cs" />
     <Compile Include="BallState.cs" />
+    <Compile Include="CharacterMarker.cs" />
     <Compile Include="CursorHider.cs" />
     <Compile Include="Elevator.cs" />
     <Compile Include="GravityInverter.cs" />
