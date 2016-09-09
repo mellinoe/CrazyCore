@@ -17,7 +17,7 @@ namespace GravityGame
         private SceneLoaderSystem _sls;
         private GraphicsSystem _gs;
         private AudioSourceComponent _audioSource;
-        private unsafe Font* _font;
+        private Font _font;
 
         public MainMenu()
         {
@@ -30,7 +30,7 @@ namespace GravityGame
             _sls = registry.GetSystem<SceneLoaderSystem>();
             _gs = registry.GetSystem<GraphicsSystem>();
             _audioSource = GameObject.GetComponent<AudioSourceComponent>();
-            _font = ImGuiNative.ImFontAtlas_AddFontFromFileTTF(ImGui.GetIO().GetNativePointer()->FontAtlas, GetMainMenuFontPath(), 48, IntPtr.Zero, null);
+            _font = ImGui.GetIO().FontAtlas.AddFontFromFileTTF(GetMainMenuFontPath(), 48);
             _gs.ImGuiRenderer.RecreateFontDeviceTexture(_gs.Context);
         }
 
@@ -53,9 +53,9 @@ namespace GravityGame
             ImGui.SetNextWindowSize(io.DisplaySize * .5f, SetCondition.Always);
             ImGui.BeginWindow("", ref opened, 0.0f, WindowFlags.NoTitleBar | WindowFlags.NoResize | WindowFlags.NoCollapse | WindowFlags.NoMove);
             ImGui.SetWindowFontScale(1.0f);
-            ImGuiNative.igPushFont(_font);
+            ImGui.PushFont(_font);
             _menuFunc();
-            ImGuiNative.igPopFont();
+            ImGui.PopFont();
             ImGui.SetWindowFontScale(1.0f);
             ImGui.EndWindow();
         }
