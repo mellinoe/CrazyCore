@@ -15,6 +15,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' " />
   <ItemGroup>
     <Compile Include="AudioAutoPlay.cs" />
+    <Compile Include="AudioManualPlay.cs" />
     <Compile Include="BallAudio.cs" />
     <Compile Include="BallController.cs" />
     <Compile Include="BallPowerup.cs" />
