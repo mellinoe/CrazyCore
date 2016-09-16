@@ -14,6 +14,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' " />
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' " />
   <ItemGroup>
+    <Compile Include="ActivationTarget.cs" />
     <Compile Include="AudioAutoPlay.cs" />
     <Compile Include="AudioManualPlay.cs" />
     <Compile Include="BallAudio.cs" />
@@ -27,6 +28,9 @@
     <Compile Include="JumpPowerup.cs" />
     <Compile Include="LevelLoadTrigger.cs" />
     <Compile Include="MainMenu.cs" />
+    <Compile Include="MessageActivationTarget.cs" />
+    <Compile Include="PathFollowingPlatform.cs" />
+    <Compile Include="TriggerActivator.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\ge\ext\imgui.net\src\ImGui.NET\ImGui.NET.csproj">
