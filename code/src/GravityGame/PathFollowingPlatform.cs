@@ -6,10 +6,11 @@ using BEPUphysics.Paths.PathFollowing;
 using BEPUphysics.Paths;
 using System.Numerics;
 using System.Linq;
+using System.Diagnostics;
 
 namespace GravityGame
 {
-    public class PathFollowingPlatform : Behavior
+    public class PathFollowingPlatform : Behavior, ActivationTarget
     {
         private Collider _collider;
         private EntityMover _entityMover;
@@ -17,6 +18,29 @@ namespace GravityGame
         private CardinalSpline3D _spline;
         private float _currentTime;
         private PathBoundaryBehavior _boundaryBehavior = PathBoundaryBehavior.Clamp;
+        private bool _active = true;
+        private float _updateDirection = +1.0f; // +1 or -1
+
+        public DeactivationBehavior DeactivationBehavior { get; set; } = DeactivationBehavior.Pause;
+
+        public bool Active
+        {
+            get { return _active; }
+            set
+            {
+                if (_active != value)
+                {
+                    if (value)
+                    {
+                        Activate();
+                    }
+                    else
+                    {
+                        Deactivate();
+                    }
+                }
+            }
+        }
 
         public CurveOffset[] TargetOffsets { get; set; }
 
@@ -54,9 +78,70 @@ namespace GravityGame
 
         public override void Update(float deltaSeconds)
         {
-            _currentTime += deltaSeconds;
-            Vector3 target = _spline.Evaluate(_currentTime);
-            _entityMover.TargetPosition = target;
+            if (_active)
+            {
+                double minTime, maxTime;
+                int minIndex, maxIndex;
+                _spline.GetCurveBoundsInformation(out minTime, out maxTime, out minIndex, out maxIndex);
+                _currentTime += (deltaSeconds * _updateDirection);
+                if (_currentTime > maxTime)
+                {
+                    switch (BoundaryBehavior)
+                    {
+                        case PathBoundaryBehavior.Clamp:
+                            _currentTime = (float)maxTime;
+                            break;
+                        case PathBoundaryBehavior.Mirror:
+                            _updateDirection *= -1;
+                            Debug.Assert(_updateDirection == -1f);
+                            _currentTime += (_currentTime - (float)maxTime) * _updateDirection * 2;
+                            break;
+                        case PathBoundaryBehavior.Wrap:
+                            _currentTime = (float)minTime + (_currentTime - (float)maxTime);
+                            break;
+                        default:
+                            throw new InvalidOperationException("Invalid BoundaryBehavior: " + BoundaryBehavior);
+                    }
+                }
+                else if (_currentTime < minTime)
+                {
+                    switch (BoundaryBehavior)
+                    {
+                        case PathBoundaryBehavior.Clamp:
+                            _currentTime = (float)minTime;
+                            break;
+                        case PathBoundaryBehavior.Mirror:
+                            _updateDirection *= -1;
+                            Debug.Assert(_updateDirection == 1f);
+                            _currentTime += ((float)minTime - _currentTime) * _updateDirection * 2;
+                            break;
+                        case PathBoundaryBehavior.Wrap:
+                            _currentTime = (float)maxTime - ((float)minTime - _currentTime);
+                            break;
+                        default:
+                            throw new InvalidOperationException("Invalid BoundaryBehavior: " + BoundaryBehavior);
+                    }
+                }
+
+                Vector3 target = _spline.Evaluate(_currentTime);
+                _entityMover.TargetPosition = target;
+            }
+            else
+            {
+                if (DeactivationBehavior == DeactivationBehavior.ResetToInitial)
+                {
+                    double minTime, maxTime;
+                    int minIndex, maxIndex;
+                    _spline.GetCurveBoundsInformation(out minTime, out maxTime, out minIndex, out maxIndex);
+                    if (_currentTime > (float)minTime)
+                    {
+                        _currentTime += (deltaSeconds * -1f); // Always go backwards in this path.
+                        _currentTime = (float)Math.Max(minTime, _currentTime);
+                        Vector3 target = _spline.Evaluate(_currentTime);
+                        _entityMover.TargetPosition = target;
+                    }
+                }
+            }
         }
 
         private CurveEndpointBehavior MapBoundaryBehavior(PathBoundaryBehavior value)
@@ -72,6 +157,16 @@ namespace GravityGame
                 default:
                     throw new InvalidOperationException("Illegal PathBoundaryBehavior: " + value);
             }
+        }
+
+        public void Activate()
+        {
+            _active = true;
+        }
+
+        public void Deactivate()
+        {
+            _active = false;
         }
     }
 
@@ -92,5 +187,11 @@ namespace GravityGame
         Clamp,
         Mirror,
         Wrap
+    }
+
+    public enum DeactivationBehavior
+    {
+        Pause,
+        ResetToInitial
     }
 }
