@@ -21,9 +21,8 @@ namespace GravityGame
             _input = registry.GetSystem<InputSystem>();
         }
 
-        protected override void OnDisabled()
+        protected override void PostDisabled()
         {
-            base.OnDisabled();
             if (_gs != null)
             {
                 _gs.Context.Window.CursorVisible = true;
