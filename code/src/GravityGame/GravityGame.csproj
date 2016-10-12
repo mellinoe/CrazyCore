@@ -22,6 +22,7 @@
     <Compile Include="BallPowerup.cs" />
     <Compile Include="BallState.cs" />
     <Compile Include="CharacterMarker.cs" />
+    <Compile Include="Collectible.cs" />
     <Compile Include="CursorHider.cs" />
     <Compile Include="Elevator.cs" />
     <Compile Include="GravityInverter.cs" />
@@ -30,6 +31,8 @@
     <Compile Include="MainMenu.cs" />
     <Compile Include="MessageActivationTarget.cs" />
     <Compile Include="PathFollowingPlatform.cs" />
+    <Compile Include="PointCollector.cs" />
+    <Compile Include="TimeDisplay.cs" />
     <Compile Include="TriggerActivator.cs" />
   </ItemGroup>
   <ItemGroup>
