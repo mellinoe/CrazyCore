@@ -26,6 +26,7 @@ namespace GravityGame
         public void Jump(float jumpStrength)
         {
             Vector3 impulse = new Vector3(0, jumpStrength, 0);
+            _collider.WakeUp();
             _collider.Entity.ApplyLinearImpulse(ref impulse);
         }
     }

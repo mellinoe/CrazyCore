@@ -30,7 +30,12 @@ namespace GravityGame
             _sls = registry.GetSystem<SceneLoaderSystem>();
             _gs = registry.GetSystem<GraphicsSystem>();
             _audioSource = GameObject.GetComponent<AudioSourceComponent>();
-            _font = ImGui.GetIO().FontAtlas.AddFontFromFileTTF(GetMainMenuFontPath(), 48);
+            string fontPath = GetMainMenuFontPath();
+            if (fontPath != null)
+            {
+                _font = ImGui.GetIO().FontAtlas.AddFontFromFileTTF(GetMainMenuFontPath(), 48);
+            }
+
             _gs.ImGuiRenderer.RecreateFontDeviceTexture(_gs.Context);
         }
 
@@ -41,7 +46,7 @@ namespace GravityGame
                 return @"C:\Windows\Fonts\segoeui.ttf";
             }
 
-            throw new PlatformNotSupportedException();
+            return null;
         }
 
         public unsafe override void Update(float deltaSeconds)
@@ -49,13 +54,19 @@ namespace GravityGame
             bool opened = true;
             var io = ImGui.GetIO();
 
-            ImGui.SetNextWindowPosCenter(SetCondition.Always);
             ImGui.SetNextWindowSize(io.DisplaySize * .5f, SetCondition.Always);
+            ImGui.SetNextWindowPosCenter(SetCondition.Always);
             ImGui.BeginWindow("", ref opened, 0.0f, WindowFlags.NoTitleBar | WindowFlags.NoResize | WindowFlags.NoCollapse | WindowFlags.NoMove);
             ImGui.SetWindowFontScale(1.0f);
-            ImGui.PushFont(_font);
+            if (_font != null)
+            {
+                ImGui.PushFont(_font);
+            }
             _menuFunc();
-            ImGui.PopFont();
+            if (_font != null)
+            {
+                ImGui.PopFont();
+            }
             ImGui.SetWindowFontScale(1.0f);
             ImGui.EndWindow();
         }

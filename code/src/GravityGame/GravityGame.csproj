@@ -33,6 +33,7 @@
     <Compile Include="PathFollowingPlatform.cs" />
     <Compile Include="PointCollector.cs" />
     <Compile Include="TimeDisplay.cs" />
+    <Compile Include="TransformFollow.cs" />
     <Compile Include="TriggerActivator.cs" />
   </ItemGroup>
   <ItemGroup>
