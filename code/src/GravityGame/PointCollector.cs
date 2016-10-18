@@ -8,6 +8,8 @@ namespace GravityGame
     {
         private int _collectedPoints;
 
+        public int CollectedPoints => _collectedPoints;
+
         public void CollectPoint()
         {
             _collectedPoints += 1;

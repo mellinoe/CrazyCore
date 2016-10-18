@@ -10,6 +10,8 @@ namespace GravityGame
         private Text2D _text;
         private TimeSpan _elapsed;
 
+        public TimeSpan Elapsed => _elapsed;
+
         protected override void Start(SystemRegistry registry)
         {
             _text = GameObject.GetComponent<Text2D>();

@@ -31,7 +31,11 @@
     <Compile Include="MainMenu.cs" />
     <Compile Include="MessageActivationTarget.cs" />
     <Compile Include="PathFollowingPlatform.cs" />
+    <Compile Include="PersistentStorage.cs" />
+    <Compile Include="PlayerStageProgress.cs" />
     <Compile Include="PointCollector.cs" />
+    <Compile Include="StageCompletionInfo.cs" />
+    <Compile Include="StageCompletionTrigger.cs" />
     <Compile Include="TimeDisplay.cs" />
     <Compile Include="TransformFollow.cs" />
     <Compile Include="TriggerActivator.cs" />

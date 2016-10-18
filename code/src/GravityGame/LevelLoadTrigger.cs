@@ -17,6 +17,7 @@ namespace GravityGame
         public AssetRef<SceneAsset> LoadedScene { get; set; }
         public AssetRef<WaveFile> AudioClip { get; set; }
         public float Volume { get; set; } = 1.0f;
+        public event Action<GameObject> LevelLoadTriggered;
 
         protected override void Attached(SystemRegistry registry)
         {
@@ -58,6 +59,7 @@ namespace GravityGame
                     _audioSystem.PlaySound(_assetSystem.Database.LoadAsset(AudioClip), Volume);
                 }
 
+                LevelLoadTriggered?.Invoke(other.GameObject);
                 var scene = _assetSystem.Database.LoadAsset(LoadedScene, cache:false);
                 _sls.LoadScene(scene);
             }

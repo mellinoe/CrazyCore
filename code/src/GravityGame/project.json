@@ -1,12 +1,14 @@
 ﻿{
   "dependencies": {
+    "Newtonsoft.Json": "9.0.1",
     "System.AppContext": "4.1.0",
     "System.Collections.Generic.MultiValueDictionary": "0.1.0-e160604-1",
     "System.Collections.Immutable": "1.2.0",
+    "System.IO.FileSystem": "4.0.1",
     "System.Linq": "4.1.0",
     "System.Net.Primitives": "4.0.11",
     "System.Console": "4.0.0",
-	  "System.Numerics.Vectors": "4.1.1",
+    "System.Numerics.Vectors": "4.1.1",
     "System.Runtime.Loader": "4.0.0",
     "System.Runtime.InteropServices.RuntimeInformation": "4.0.0"
   },
