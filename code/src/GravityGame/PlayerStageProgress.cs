@@ -8,11 +8,11 @@ namespace GravityGame
 {
     public class PlayerStageProgress : PersistentStorage<PlayerStageProgress, PlayerStageProgress.PersistentStorage>
     {
-        public Dictionary<string, StageCompletionInfo> StagesCompleted { get; set; }
+        public Dictionary<string, StageCompletionInfo> Stages { get; set; }
 
         public PlayerStageProgress()
         {
-            StagesCompleted = new Dictionary<string, StageCompletionInfo>()
+            Stages = new Dictionary<string, StageCompletionInfo>()
             {
                 { "Level1", new StageCompletionInfo() },
             };
@@ -33,18 +33,47 @@ namespace GravityGame
                 info.FastestCompletionFull = Math.Min(info.FastestCompletionFull, (float)elapsed.TotalSeconds);
             }
 
+            UnlockNextLevel(stageName);
+
             Save();
         }
 
         private StageCompletionInfo GetInfoForStage(string stageName)
         {
             StageCompletionInfo ret;
-            if (!StagesCompleted.TryGetValue(stageName, out ret))
+            if (!Stages.TryGetValue(stageName, out ret))
             {
                 throw new InvalidOperationException("Stage info for stage " + stageName + " was not initialized.");
             }
 
             return ret;
         }
+
+        private void UnlockNextLevel(string stageName)
+        {
+            for (int i = 0; i < s_stageUnlockList.Length - 1; i++)
+            {
+                if (s_stageUnlockList[i] == stageName)
+                {
+                    UnlockLevel(s_stageUnlockList[i + 1]);
+                    return;
+                }
+            }
+        }
+
+        private void UnlockLevel(string stageName)
+        {
+            if (!Stages.ContainsKey(stageName))
+            {
+                Stages.Add(stageName, new StageCompletionInfo());
+            }
+        }
+
+        private static readonly string[] s_stageUnlockList =
+        {
+            "Level1",
+            "Level2",
+            "Level3",
+        };
     }
 }

@@ -7,6 +7,9 @@ using Engine.Graphics;
 using System.Numerics;
 using Engine.Audio;
 using System.Runtime.InteropServices;
+using Veldrid.Assets;
+using System.Linq;
+using System.IO;
 
 namespace GravityGame
 {
@@ -18,6 +21,7 @@ namespace GravityGame
         private GraphicsSystem _gs;
         private AudioSourceComponent _audioSource;
         private Font _font;
+        private AssetID[] _allScenes;
 
         public MainMenu()
         {
@@ -31,12 +35,14 @@ namespace GravityGame
             _gs = registry.GetSystem<GraphicsSystem>();
             _audioSource = GameObject.GetComponent<AudioSourceComponent>();
             string fontPath = GetMainMenuFontPath();
-            if (fontPath != null)
+            if (fontPath != null && File.Exists(fontPath))
             {
                 _font = ImGui.GetIO().FontAtlas.AddFontFromFileTTF(GetMainMenuFontPath(), 48);
             }
 
             _gs.ImGuiRenderer.RecreateFontDeviceTexture(_gs.Context);
+
+            _allScenes = _assetSystem.Database.GetAssetsOfType(typeof(SceneAsset));
         }
 
         private string GetMainMenuFontPath()
@@ -54,7 +60,7 @@ namespace GravityGame
             bool opened = true;
             var io = ImGui.GetIO();
 
-            ImGui.SetNextWindowSize(io.DisplaySize * .5f, SetCondition.Always);
+            ImGui.SetNextWindowSize(io.DisplaySize * new Vector2(0.5f, 0.75f), SetCondition.Always);
             ImGui.SetNextWindowPosCenter(SetCondition.Always);
             ImGui.BeginWindow("", ref opened, 0.0f, WindowFlags.NoTitleBar | WindowFlags.NoResize | WindowFlags.NoCollapse | WindowFlags.NoMove);
             ImGui.SetWindowFontScale(1.0f);
@@ -63,6 +69,13 @@ namespace GravityGame
                 ImGui.PushFont(_font);
             }
             _menuFunc();
+            if (_menuFunc != DrawMainPage)
+            {
+                if (ImGui.Button("Back"))
+                {
+                    _menuFunc = DrawMainPage;
+                }
+            }
             if (_font != null)
             {
                 ImGui.PopFont();
@@ -95,33 +108,54 @@ namespace GravityGame
         {
             ImGui.Text("Created by Eric Mellino");
             ImGui.Text("Built using .NET Core.");
-            if (ImGui.Button("Back"))
-            {
-                _menuFunc = DrawMainPage;
-            }
         }
 
         private void DrawOptionsPage()
         {
-            if (ImGui.Button("Back"))
-            {
-                _menuFunc = DrawMainPage;
-            }
         }
 
         private void DrawPlayPage()
         {
-            foreach (var scene in _assetSystem.Database.GetAssetsOfType(typeof(SceneAsset)))
+            foreach (var kvp in PlayerStageProgress.Instance.Stages)
             {
-                if (ImGui.Button(scene))
+                if (DrawSceneOptionLabel(kvp.Key, kvp.Value))
                 {
-                    _sls.LoadScene(_assetSystem.Database.LoadAsset<SceneAsset>(scene));
+                    AssetID sceneID = _allScenes.FirstOrDefault(id => id.Value.Contains(kvp.Key));
+                    if (sceneID.IsEmpty)
+                    {
+                        throw new InvalidOperationException("No scene was found with the name " + kvp.Key);
+                    }
+
+                    _sls.LoadScene(_assetSystem.Database.LoadAsset<SceneAsset>(sceneID, false));
                 }
             }
-            if (ImGui.Button("Back"))
+        }
+
+        private bool DrawSceneOptionLabel(string sceneName, StageCompletionInfo sci)
+        {
+            bool result = false;
+            if (ImGui.BeginChildFrame((uint)sceneName.GetHashCode(), new Vector2(0, 175), WindowFlags.ShowBorders))
             {
-                _menuFunc = DrawMainPage;
+                if (ImGui.BeginChildFrame(0, new Vector2(150, 0), WindowFlags.Default))
+                {
+                    if (ImGui.Button(sceneName, new Vector2(-1, -1)))
+                    {
+                        result = true;
+                    }
+                }
+                ImGui.EndChildFrame();
+                ImGui.SameLine();
+                if (ImGui.BeginChildFrame(1, new Vector2(-1, -0), WindowFlags.Default))
+                {
+                    ImGui.Text($"Points: {sci.MaxPointsCollected} / {sci.MaxPointsPossible}");
+                    ImGui.Text($"Any%%: {sci.FastestCompletionAny} seconds");
+                    ImGui.Text($"100%%: {sci.FastestCompletionFull} seconds");
+                }
+                ImGui.EndChildFrame();
             }
+            ImGui.EndChildFrame();
+
+            return result;
         }
     }
 }
