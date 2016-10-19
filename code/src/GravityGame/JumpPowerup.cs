@@ -5,6 +5,7 @@ using Veldrid.Assets;
 using Engine.Assets;
 using System.Numerics;
 using Engine.Graphics;
+using System.Threading.Tasks;
 
 namespace GravityGame
 {
@@ -26,11 +27,15 @@ namespace GravityGame
             _audioSource.AudioClip = new AssetRef<WaveFile>("Audio/Sproing.wav");
             _audioSource.Gain = 4.0f;
 
-            var particleChildPrefab = registry.GetSystem<AssetSystem>().Database.LoadAsset<SerializedPrefab>("Prefabs/JumpParticles.prefab", false);
-            var particleChild = particleChildPrefab.Instantiate(registry.GetSystem<GameObjectQuerySystem>());
-            var transformFollow = new TransformFollow() { Target = Transform };
-            particleChild.AddComponent(transformFollow);
-            _childParticleSystem = particleChild.GetComponent<ParticleSystem>();
+            var shs = registry.GetSystem<SynchronizationHelperSystem>();
+            Task.Run(() =>
+            {
+                var particleChildPrefab = registry.GetSystem<AssetSystem>().Database.LoadAsset<SerializedPrefab>("Prefabs/JumpParticles.prefab", false);
+                var particleChild = particleChildPrefab.Instantiate(registry.GetSystem<GameObjectQuerySystem>());
+                var transformFollow = new TransformFollow() { Target = Transform };
+                particleChild.AddComponent(transformFollow);
+                _childParticleSystem = particleChild.GetComponent<ParticleSystem>();
+            });
         }
 
         public override void Update(float deltaSeconds)
