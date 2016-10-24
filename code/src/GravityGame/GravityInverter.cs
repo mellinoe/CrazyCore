@@ -30,8 +30,6 @@ namespace GravityGame
             {
                 entity.ActivityInformation.Activate();
             }
-
-            _gs.MainCamera.UpDirection = Vector3.Normalize(-_physics.Space.ForceUpdater.Gravity);
         }
     }
 }

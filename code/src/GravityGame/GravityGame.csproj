@@ -25,6 +25,7 @@
     <Compile Include="Collectible.cs" />
     <Compile Include="CursorHider.cs" />
     <Compile Include="Elevator.cs" />
+    <Compile Include="GravityChanger.cs" />
     <Compile Include="GravityInverter.cs" />
     <Compile Include="JumpPowerup.cs" />
     <Compile Include="LevelLoadTrigger.cs" />

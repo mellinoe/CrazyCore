@@ -7,6 +7,9 @@ using Engine.Physics;
 using BEPUutilities.DataStructures;
 using BEPUphysics.NarrowPhaseSystems.Pairs;
 using Engine.Graphics;
+using Veldrid;
+using System.Collections.Generic;
+using Veldrid.Graphics;
 
 namespace GravityGame
 {
@@ -25,6 +28,7 @@ namespace GravityGame
         public float Pitch { get; set; } = 0f;
 
         public bool IsOnGround { get; private set; }
+        public float RayHitCorrectionDistance { get; set; } = 0.3f;
 
         private float _followDistance = 6f;
         private float _minFollowDistance = 5f;
@@ -35,12 +39,15 @@ namespace GravityGame
         private float _sprintFactor = 2f;
         private float _maxPich = -.15f;
         private float _minPitch = -.95f;
+        private PhysicsSystem _physics;
+        private readonly List<RayCastHit<RenderItem>> _rayHits = new List<RayCastHit<RenderItem>>();
 
         protected override void Start(SystemRegistry registry)
         {
             _input = registry.GetSystem<InputSystem>();
             _goqs = registry.GetSystem<GameObjectQuerySystem>();
             _gs = registry.GetSystem<GraphicsSystem>();
+            _physics = registry.GetSystem<PhysicsSystem>();
             _ball = _goqs.FindByName(BallName);
             if (_ball == null)
             {
@@ -56,16 +63,13 @@ namespace GravityGame
             IsOnGround = currentPairs.Count > 0;
 
             Vector3 forwardDirection = Transform.Forward;
-            forwardDirection.Y = 0;
-            forwardDirection = Vector3.Normalize(forwardDirection);
-            
             Vector3 rightDirection = Transform.Right;
-            rightDirection.Y = 0;
-            rightDirection = Vector3.Normalize(rightDirection);
-            if (_gs.MainCamera.UpDirection != Vector3.UnitY)
-            {
-                rightDirection *= -1;
-            }
+
+            Vector3 gravityUp = Vector3.Normalize(-_physics.Space.ForceUpdater.Gravity);
+            Vector3 upOfForward = MathUtil.Projection(forwardDirection, gravityUp);
+            Vector3 upOfRight = MathUtil.Projection(rightDirection, gravityUp);
+            forwardDirection = Vector3.Normalize(forwardDirection - upOfForward);
+            rightDirection = Vector3.Normalize(rightDirection - upOfRight);
 
             Vector3 motionDirection = Vector3.Zero;
             if (_input.GetKey(Key.W))
@@ -120,19 +124,38 @@ namespace GravityGame
                 _followDistance = Math.Min(_maxFollowDistance, Math.Max(_minFollowDistance, _followDistance));
             }
 
-            Vector3 camF = -Vector3.UnitZ;
-            Vector3 camU = _gs.MainCamera.UpDirection;
-            Vector3 camR = Vector3.Normalize(Vector3.Cross(camF, camU));
-
-            Quaternion rotation = 
-                Quaternion.CreateFromAxisAngle(camU, Yaw)
-                * 
-                Quaternion.CreateFromAxisAngle(camR, Pitch)
+            Quaternion rotation =
+                Quaternion.CreateFromAxisAngle(Vector3.UnitY, Yaw)
+                *
+                Quaternion.CreateFromAxisAngle(Vector3.UnitX, Pitch)
                 ;
+
+            Vector3 gravityDir = Vector3.Normalize(-_physics.Space.ForceUpdater.Gravity);
+            Quaternion gravityFactor = MathUtil.FromToRotation(Vector3.UnitY, gravityDir);
+            rotation = Quaternion.Concatenate(rotation, gravityFactor);
 
             Transform.Rotation = rotation;
 
             Vector3 targetPosition = _ball.Transform.Position - Transform.Forward * _followDistance;
+
+            _rayHits.Clear();
+            Ray ray = new Ray(targetPosition, Transform.Forward);
+            int hits = _gs.RayCast(ray, _rayHits);
+            if (hits > 0)
+            { 
+                float distance = _followDistance;
+                foreach (var hit in _rayHits)
+                {
+                    if (hit.Distance < distance && hit.Item is Component)
+                    {
+                        if (((Component)hit.Item).GameObject != _ball)
+                        {
+                            distance = hit.Distance + RayHitCorrectionDistance;
+                            targetPosition = hit.Location + Transform.Forward * RayHitCorrectionDistance;
+                        }
+                    }
+                }
+            }
 
             Transform.Position = targetPosition;
         }
