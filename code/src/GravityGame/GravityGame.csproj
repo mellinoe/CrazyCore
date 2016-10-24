@@ -39,6 +39,8 @@
     <Compile Include="TimeDisplay.cs" />
     <Compile Include="TransformFollow.cs" />
     <Compile Include="TriggerActivator.cs" />
+    <Compile Include="TriggerDelegateInvoker.cs" />
+    <Compile Include="TriggerInvokerBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\ge\ext\imgui.net\src\ImGui.NET\ImGui.NET.csproj">

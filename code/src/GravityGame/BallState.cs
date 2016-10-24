@@ -10,10 +10,13 @@ namespace GravityGame
     public class BallState : Behavior
     {
         private Collider _collider;
+        private PhysicsSystem _physics;
+
         public bool IsOnGround { get; private set; }
 
         protected override void Start(SystemRegistry registry)
         {
+            _physics = registry.GetSystem<PhysicsSystem>();
             _collider = GameObject.GetComponent<Collider>();
         }
 
@@ -25,7 +28,8 @@ namespace GravityGame
 
         public void Jump(float jumpStrength)
         {
-            Vector3 impulse = new Vector3(0, jumpStrength, 0);
+            Vector3 gravityDir = Vector3.Normalize(_physics.Space.ForceUpdater.Gravity);
+            Vector3 impulse = -gravityDir * jumpStrength;
             _collider.WakeUp();
             _collider.Entity.ApplyLinearImpulse(ref impulse);
         }

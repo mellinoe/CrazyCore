@@ -6,6 +6,7 @@ using Veldrid.Platform;
 using Engine.Physics;
 using BEPUutilities.DataStructures;
 using BEPUphysics.NarrowPhaseSystems.Pairs;
+using Engine.Graphics;
 
 namespace GravityGame
 {
@@ -15,6 +16,7 @@ namespace GravityGame
         private GameObjectQuerySystem _goqs;
         private GameObject _ball;
         private Collider _ballCollider;
+        private GraphicsSystem _gs;
 
         public string BallName { get; set; }
         public float PushForce { get; set; } = 50f;
@@ -36,9 +38,9 @@ namespace GravityGame
 
         protected override void Start(SystemRegistry registry)
         {
-            base.Start(registry);
             _input = registry.GetSystem<InputSystem>();
             _goqs = registry.GetSystem<GameObjectQuerySystem>();
+            _gs = registry.GetSystem<GraphicsSystem>();
             _ball = _goqs.FindByName(BallName);
             if (_ball == null)
             {
@@ -56,10 +58,14 @@ namespace GravityGame
             Vector3 forwardDirection = Transform.Forward;
             forwardDirection.Y = 0;
             forwardDirection = Vector3.Normalize(forwardDirection);
-
+            
             Vector3 rightDirection = Transform.Right;
             rightDirection.Y = 0;
             rightDirection = Vector3.Normalize(rightDirection);
+            if (_gs.MainCamera.UpDirection != Vector3.UnitY)
+            {
+                rightDirection *= -1;
+            }
 
             Vector3 motionDirection = Vector3.Zero;
             if (_input.GetKey(Key.W))
@@ -114,10 +120,20 @@ namespace GravityGame
                 _followDistance = Math.Min(_maxFollowDistance, Math.Max(_minFollowDistance, _followDistance));
             }
 
-            Quaternion targetRotation = Quaternion.CreateFromYawPitchRoll(Yaw, Pitch, 0f);
-            Transform.Rotation = targetRotation;
+            Vector3 camF = -Vector3.UnitZ;
+            Vector3 camU = _gs.MainCamera.UpDirection;
+            Vector3 camR = Vector3.Normalize(Vector3.Cross(camF, camU));
+
+            Quaternion rotation = 
+                Quaternion.CreateFromAxisAngle(camU, Yaw)
+                * 
+                Quaternion.CreateFromAxisAngle(camR, Pitch)
+                ;
+
+            Transform.Rotation = rotation;
 
             Vector3 targetPosition = _ball.Transform.Position - Transform.Forward * _followDistance;
+
             Transform.Position = targetPosition;
         }
 

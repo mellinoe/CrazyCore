@@ -6,31 +6,13 @@ using Veldrid.Assets;
 
 namespace GravityGame
 {
-    public class Collectible : Component
+    public class Collectible : TriggerInvokerBase
     {
         private AudioSystem _audio;
         private AssetSystem _assetSystem;
 
         public AssetRef<WaveFile> SoundEffect { get; set; }
         public float Volume { get; set; } = 1.0f;
-
-        protected override void OnDisabled()
-        {
-            Collider collider = GameObject.GetComponent<Collider>();
-            if (collider != null)
-            {
-                collider.TriggerEntered -= OnTriggerEntered;
-            }
-        }
-
-        protected override void OnEnabled()
-        {
-            Collider collider = GameObject.GetComponent<Collider>();
-            if (collider != null)
-            {
-                collider.TriggerEntered += OnTriggerEntered;
-            }
-        }
 
         protected override void Attached(SystemRegistry registry)
         {
@@ -42,7 +24,7 @@ namespace GravityGame
         {
         }
 
-        private void OnTriggerEntered(Collider other)
+        protected override void OnTriggerEntered(Collider other)
         {
             var collector = other.GameObject.GetComponent<PointCollector>();
             if (collector != null)

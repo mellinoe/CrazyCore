@@ -7,7 +7,7 @@ using Veldrid.Assets;
 
 namespace GravityGame
 {
-    public class BallPowerup : Component
+    public class BallPowerup : TriggerInvokerBase
     {
         private AudioSystem _audioSystem;
         private AssetSystem _assetSystem;
@@ -22,22 +22,12 @@ namespace GravityGame
             _assetSystem = registry.GetSystem<AssetSystem>();
         }
 
-        protected override void OnDisabled()
-        {
-            GameObject.GetComponent<Collider>().TriggerEntered -= OnTriggerEntered;
-        }
-
-        protected override void OnEnabled()
-        {
-            GameObject.GetComponent<Collider>().TriggerEntered += OnTriggerEntered;
-        }
-
-        private void OnTriggerEntered(Collider other)
+        protected override void OnTriggerEntered(Collider other)
         {
             if (other.GameObject.GetComponent<CharacterMarker>() != null)
             {
                 other.GameObject.AddComponent(CreateBallComponent());
-                if (!SoundEffect.ID.IsEmpty)
+                if (SoundEffect != null && !SoundEffect.ID.IsEmpty)
                 {
                     _audioSystem.PlaySound(_assetSystem.Database.LoadAsset(SoundEffect), Volume);
                 }
