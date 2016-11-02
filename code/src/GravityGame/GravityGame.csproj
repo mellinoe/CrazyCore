@@ -29,8 +29,12 @@
     <Compile Include="GravityInverter.cs" />
     <Compile Include="JumpPowerup.cs" />
     <Compile Include="LevelLoadTrigger.cs" />
+    <Compile Include="Magnet.cs" />
+    <Compile Include="MagnetPowerup.cs" />
+    <Compile Include="MagnetState.cs" />
     <Compile Include="MainMenu.cs" />
     <Compile Include="MessageActivationTarget.cs" />
+    <Compile Include="ObjectTrackingZone.cs" />
     <Compile Include="PathFollowingPlatform.cs" />
     <Compile Include="PersistentStorage.cs" />
     <Compile Include="PlayerStageProgress.cs" />

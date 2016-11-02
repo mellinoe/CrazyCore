@@ -159,12 +159,5 @@ namespace GravityGame
 
             Transform.Position = targetPosition;
         }
-
-
-        public void Jump(float jumpStrength)
-        {
-            Vector3 impulse = new Vector3(0, jumpStrength, 0);
-            _ballCollider.Entity.ApplyLinearImpulse(ref impulse);
-        }
     }
 }
