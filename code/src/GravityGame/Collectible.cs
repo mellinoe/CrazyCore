@@ -2,6 +2,7 @@
 using Engine.Assets;
 using Engine.Audio;
 using Engine.Physics;
+using Engine.Graphics;
 using Veldrid.Assets;
 
 namespace GravityGame
@@ -12,6 +13,7 @@ namespace GravityGame
         private AssetSystem _assetSystem;
 
         public AssetRef<WaveFile> SoundEffect { get; set; }
+        public AssetRef<WaveFile> ParticleCollectionSoundEffect { get; set; }
         public float Volume { get; set; } = 1.0f;
 
         protected override void Attached(SystemRegistry registry)
@@ -35,7 +37,23 @@ namespace GravityGame
                     _audio.PlaySound(_assetSystem.Database.LoadAsset(SoundEffect), Volume);
                 }
 
-                GameObject.Destroy();
+                ParticleSystem particleSystem = GameObject.GetComponent<Engine.Graphics.ParticleSystem>();
+                if (particleSystem != null)
+                {
+                    var effect = new ParticleVacuumEffect(
+                        particleSystem,
+                        collector.Transform,
+                        _assetSystem.Database.LoadAsset(ParticleCollectionSoundEffect),
+                        1.0f);
+                    GameObject.AddComponent(effect);
+                    particleSystem.EmissionRate = 0f;
+                    particleSystem.ParticleLifetime = 10f;
+                    Enabled = false;
+                }
+                else
+                {
+                    GameObject.Destroy();
+                }
             }
         }
     }

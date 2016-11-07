@@ -39,8 +39,9 @@ namespace GravityGame
                     CursorVisible = !CursorVisible;
                 }
 
-                window.CursorVisible = CursorVisible;
-                if (ForceCenter && !CursorVisible)
+                bool currentVisibility = CursorVisible || MenuGlobals.NumMenusOpen > 0;
+                window.CursorVisible = currentVisibility;
+                if (ForceCenter && !currentVisibility)
                 {
                     _input.MousePosition = new Vector2(window.Width / 2f, window.Height / 2f);
                 }

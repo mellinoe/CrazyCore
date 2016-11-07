@@ -4,14 +4,16 @@ using Engine.Physics;
 using Veldrid.Assets;
 using Engine.Assets;
 using Engine.Audio;
+using ImGuiNET;
+using System.Numerics;
 
 namespace GravityGame
 {
     public class LevelLoadTrigger : Component
     {
         private Collider _collider;
-        private SceneLoaderSystem _sls;
-        private AssetSystem _assetSystem;
+        protected SceneLoaderSystem _sls;
+        protected AssetSystem _assetSystem;
         private AudioSystem _audioSystem;
 
         public AssetRef<SceneAsset> LoadedScene { get; set; }
@@ -60,9 +62,70 @@ namespace GravityGame
                 }
 
                 LevelLoadTriggered?.Invoke(other.GameObject);
-                var scene = _assetSystem.Database.LoadAsset(LoadedScene, cache:false);
-                _sls.LoadScene(scene);
+                LoadLevel();
             }
+        }
+
+        protected virtual void LoadLevel()
+        {
+            SceneAsset scene = _assetSystem.Database.LoadAsset(LoadedScene, cache: false);
+            _sls.LoadScene(scene);
+        }
+    }
+
+    public class LevelLoadTriggerWithMenu : LevelLoadTrigger
+    {
+        private TimeControlSystem _timeSystem;
+
+        protected override void Attached(SystemRegistry registry)
+        {
+            base.Attached(registry);
+            _timeSystem = registry.GetSystem<TimeControlSystem>();
+        }
+
+        protected override void LoadLevel()
+        {
+            GameObject.AddComponent(new DelegateMenu(DrawMenu, null));
+            _timeSystem.TimeScale = 0f;
+            Enabled = false;
+        }
+
+        private bool DrawMenu()
+        {
+            var displaySize = ImGui.GetIO().DisplaySize;
+            if (MenuGlobals.MenuFont != null)
+            {
+                ImGui.PushFont(MenuGlobals.MenuFont);
+            }
+            ImGui.SetNextWindowSize(displaySize * new Vector2(0.7f, 1f) - new Vector2(0, 20), SetCondition.Always);
+            ImGui.SetNextWindowPosCenter(SetCondition.Always);
+            if (ImGui.BeginWindow(string.Empty, WindowFlags.NoTitleBar | WindowFlags.NoResize | WindowFlags.NoCollapse | WindowFlags.NoMove))
+            {
+                if (ImGui.Button("Next Level"))
+                {
+                    SceneAsset scene = _assetSystem.Database.LoadAsset(LoadedScene, cache: false);
+                    _sls.LoadScene(scene);
+                }
+                if (ImGui.Button("Retry"))
+                {
+                    AssetID sceneID = "Scenes/" + _sls.LoadedScene.Name + ".scene";
+                    SceneAsset scene = _assetSystem.Database.LoadAsset<SceneAsset>(sceneID, cache: false);
+                    _sls.LoadScene(scene);
+                }
+                if (ImGui.Button("Main Menu"))
+                {
+                    AssetID sceneID = "Scenes/MainMenu.scene";
+                    SceneAsset scene = _assetSystem.Database.LoadAsset<SceneAsset>(sceneID, cache: false);
+                    _sls.LoadScene(scene);
+                }
+            }
+            ImGui.EndWindow();
+            if (MenuGlobals.MenuFont != null)
+            {
+                ImGui.PopFont();
+            }
+
+            return false;
         }
     }
 }

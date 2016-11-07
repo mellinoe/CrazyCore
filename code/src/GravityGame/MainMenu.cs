@@ -38,6 +38,7 @@ namespace GravityGame
             if (fontPath != null && File.Exists(fontPath))
             {
                 _font = ImGui.GetIO().FontAtlas.AddFontFromFileTTF(GetMainMenuFontPath(), 48);
+                MenuGlobals.MenuFont = _font;
             }
 
             _gs.ImGuiRenderer.RecreateFontDeviceTexture(_gs.Context);
