@@ -34,26 +34,28 @@ namespace GravityGame
             _sls = registry.GetSystem<SceneLoaderSystem>();
             _gs = registry.GetSystem<GraphicsSystem>();
             _audioSource = GameObject.GetComponent<AudioSourceComponent>();
-            string fontPath = GetMainMenuFontPath();
-            if (fontPath != null && File.Exists(fontPath))
-            {
-                _font = ImGui.GetIO().FontAtlas.AddFontFromFileTTF(GetMainMenuFontPath(), 48);
-                MenuGlobals.MenuFont = _font;
-            }
+            LoadFont();
 
             _gs.ImGuiRenderer.RecreateFontDeviceTexture(_gs.Context);
 
             _allScenes = _assetSystem.Database.GetAssetsOfType(typeof(SceneAsset));
         }
 
-        private string GetMainMenuFontPath()
+        private unsafe void LoadFont()
         {
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            using (var stream = _assetSystem.Database.OpenAssetStream("Fonts/Itim-Regular.ttf"))
             {
-                return @"C:\Windows\Fonts\segoeui.ttf";
+                byte[] fontBytes = new byte[stream.Length];
+                using (var copyTarget = new MemoryStream(fontBytes))
+                {
+                    stream.CopyTo(copyTarget);
+                    fixed (byte* bytePtr = fontBytes)
+                    {
+                        _font = ImGui.GetIO().FontAtlas.AddFontFromMemoryTTF(new IntPtr(bytePtr), (int)stream.Length, 48);
+                        MenuGlobals.MenuFont = _font;
+                    }
+                }
             }
-
-            return null;
         }
 
         public unsafe override void Update(float deltaSeconds)
