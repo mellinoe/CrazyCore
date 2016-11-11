@@ -17,10 +17,12 @@
     <Compile Include="ActivationTarget.cs" />
     <Compile Include="AudioAutoPlay.cs" />
     <Compile Include="AudioManualPlay.cs" />
+    <Compile Include="AutoJoint.cs" />
     <Compile Include="BallAudio.cs" />
     <Compile Include="BallController.cs" />
     <Compile Include="BallPowerup.cs" />
     <Compile Include="BallState.cs" />
+    <Compile Include="BoostPad.cs" />
     <Compile Include="CharacterMarker.cs" />
     <Compile Include="Collectible.cs" />
     <Compile Include="CursorHider.cs" />
@@ -42,6 +44,7 @@
     <Compile Include="PersistentStorage.cs" />
     <Compile Include="PlayerStageProgress.cs" />
     <Compile Include="PointCollector.cs" />
+    <Compile Include="Rotater.cs" />
     <Compile Include="StageCompletionInfo.cs" />
     <Compile Include="StageCompletionTrigger.cs" />
     <Compile Include="TimeDisplay.cs" />

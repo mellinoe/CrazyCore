@@ -20,8 +20,11 @@ namespace GravityGame
         private PathBoundaryBehavior _boundaryBehavior = PathBoundaryBehavior.Clamp;
         private bool _active = true;
         private float _updateDirection = +1.0f; // +1 or -1
+        private float _elapsedPreActivationTime = 0f;
 
         public DeactivationBehavior DeactivationBehavior { get; set; } = DeactivationBehavior.Pause;
+
+        public float PreActivateTime { get; set; } = 0f;
 
         public bool Active
         {
@@ -74,12 +77,24 @@ namespace GravityGame
             }
 
             _physics.AddObject(_entityMover);
+            _elapsedPreActivationTime = PreActivateTime;
         }
 
         public override void Update(float deltaSeconds)
         {
             if (_active)
             {
+                if (_elapsedPreActivationTime > 0)
+                {
+                    _elapsedPreActivationTime -= deltaSeconds;
+                    if (_elapsedPreActivationTime > 0)
+                    {
+                        return;
+                    }
+
+                    deltaSeconds += _elapsedPreActivationTime;
+                }
+
                 double minTime, maxTime;
                 int minIndex, maxIndex;
                 _spline.GetCurveBoundsInformation(out minTime, out maxTime, out minIndex, out maxIndex);
