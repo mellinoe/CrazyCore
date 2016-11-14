@@ -22,7 +22,7 @@ namespace GravityGame
         private GraphicsSystem _gs;
 
         public string BallName { get; set; }
-        public float PushForce { get; set; } = 50f;
+        public float PushForce { get; set; } = 100f;
 
         public float Yaw { get; set; } = 0f;
         public float Pitch { get; set; } = 0f;
@@ -36,7 +36,7 @@ namespace GravityGame
 
         private float _zoomSpeed = .48f;
         private float _cameraTurnSpeed = .005f;
-        private float _sprintFactor = 2f;
+        private float _sprintFactor = 1f;
         private float _maxPich = -.15f;
         private float _minPitch = -.95f;
         private PhysicsSystem _physics;

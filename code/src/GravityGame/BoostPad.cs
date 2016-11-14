@@ -2,6 +2,7 @@
 using Engine;
 using Engine.Physics;
 using System.Numerics;
+using System.Diagnostics;
 
 namespace GravityGame
 {
@@ -15,10 +16,12 @@ namespace GravityGame
 
         protected override void OnTriggerEntered(Collider other)
         {
-            if (other.Entity.LinearVelocity != Vector3.Zero)
+            if (other.Entity.LinearVelocity.LengthSquared() != 0)
             {
                 Vector3 direction = Vector3.Normalize(other.Entity.LinearVelocity);
-                other.Entity.LinearVelocity = direction * LaunchForce;
+                Vector3 newLinearVelocity = direction * LaunchForce;
+                Debug.Assert(!MathUtil.ContainsNaN(newLinearVelocity));
+                other.Entity.LinearVelocity = newLinearVelocity;
             }
         }
 

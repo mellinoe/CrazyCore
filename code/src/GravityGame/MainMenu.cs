@@ -43,16 +43,19 @@ namespace GravityGame
 
         private unsafe void LoadFont()
         {
-            using (var stream = _assetSystem.Database.OpenAssetStream("Fonts/Itim-Regular.ttf"))
+            if (MenuGlobals.MenuFont == null)
             {
-                byte[] fontBytes = new byte[stream.Length];
-                using (var copyTarget = new MemoryStream(fontBytes))
+                using (var stream = _assetSystem.Database.OpenAssetStream("Fonts/Itim-Regular.ttf"))
                 {
-                    stream.CopyTo(copyTarget);
-                    fixed (byte* bytePtr = fontBytes)
+                    byte[] fontBytes = new byte[stream.Length];
+                    using (var copyTarget = new MemoryStream(fontBytes))
                     {
-                        _font = ImGui.GetIO().FontAtlas.AddFontFromMemoryTTF(new IntPtr(bytePtr), (int)stream.Length, 48);
-                        MenuGlobals.MenuFont = _font;
+                        stream.CopyTo(copyTarget);
+                        fixed (byte* bytePtr = fontBytes)
+                        {
+                            _font = ImGui.GetIO().FontAtlas.AddFontFromMemoryTTF(new IntPtr(bytePtr), (int)stream.Length, 48);
+                            MenuGlobals.MenuFont = _font;
+                        }
                     }
                 }
             }
