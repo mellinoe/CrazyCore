@@ -10,6 +10,7 @@ using Engine.Graphics;
 using Veldrid;
 using System.Collections.Generic;
 using Veldrid.Graphics;
+using System.Diagnostics;
 
 namespace GravityGame
 {
@@ -19,6 +20,7 @@ namespace GravityGame
         private GameObjectQuerySystem _goqs;
         private GameObject _ball;
         private Collider _ballCollider;
+        private BallState _ballState;
         private GraphicsSystem _gs;
 
         public string BallName { get; set; }
@@ -55,6 +57,7 @@ namespace GravityGame
             }
 
             _ballCollider = _ball.GetComponent<Collider>();
+            _ballState = _ball.GetComponent<BallState>();
         }
 
         public override void Update(float deltaSeconds)
@@ -71,36 +74,45 @@ namespace GravityGame
             forwardDirection = Vector3.Normalize(forwardDirection - upOfForward);
             rightDirection = Vector3.Normalize(rightDirection - upOfRight);
 
-            Vector3 motionDirection = Vector3.Zero;
+            Vector3 rotationDir = Vector3.Zero;
+            Vector3 motionDir = Vector3.Zero;
             if (_input.GetKey(Key.W))
             {
-                motionDirection -= rightDirection;
+                rotationDir -= rightDirection;
+                motionDir += forwardDirection;
             }
             if (_input.GetKey(Key.S))
             {
-                motionDirection += rightDirection;
+                rotationDir += rightDirection;
+                motionDir -= forwardDirection;
             }
             if (_input.GetKey(Key.A))
             {
-                motionDirection -= forwardDirection;
+                rotationDir -= forwardDirection;
+                motionDir -= rightDirection;
             }
             if (_input.GetKey(Key.D))
             {
-                motionDirection += forwardDirection;
+                rotationDir += forwardDirection;
+                motionDir += rightDirection;
             }
 
-            if (motionDirection != Vector3.Zero)
+            if (rotationDir != Vector3.Zero)
             {
+                Debug.Assert(motionDir != Vector3.Zero);
                 _ballCollider.WakeUp();
-                motionDirection = Vector3.Normalize(motionDirection);
+                rotationDir = Vector3.Normalize(rotationDir);
+                motionDir = Vector3.Normalize(motionDir);
                 float force = PushForce;
                 if (_input.GetKey(Key.ShiftLeft))
                 {
                     force *= _sprintFactor;
                 }
-                Vector3 impulse = motionDirection * force * deltaSeconds;
+                Vector3 impulse = rotationDir * force * deltaSeconds;
                 _ballCollider.Entity.ApplyAngularImpulse(ref impulse);
             }
+
+            _ballState.CurrentMotionDirection = motionDir;
 
             Vector2 mouseDelta = _input.MouseDelta;
             Yaw -= mouseDelta.X * _cameraTurnSpeed;

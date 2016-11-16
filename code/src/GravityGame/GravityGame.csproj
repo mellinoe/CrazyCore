@@ -30,6 +30,7 @@
     <Compile Include="Elevator.cs" />
     <Compile Include="GravityChanger.cs" />
     <Compile Include="GravityInverter.cs" />
+    <Compile Include="LinearBoostPowerup.cs" />
     <Compile Include="JumpPowerup.cs" />
     <Compile Include="LevelLoadTrigger.cs" />
     <Compile Include="Magnet.cs" />
