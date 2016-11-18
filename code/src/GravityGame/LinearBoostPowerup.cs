@@ -30,7 +30,7 @@ namespace GravityGame
             _ballState = GameObject.GetComponent<BallState>();
             _audioSource = new AudioSourceComponent();
             GameObject.AddComponent(_audioSource);
-            _audioSource.AudioClip = new AssetRef<WaveFile>("Audio/Boost.wav");
+            _audioSource.AudioClip = new AssetRef<WaveFile>("Audio/BoostNoise.wav");
             _audioSource.Gain = 4.0f;
 
             var shs = registry.GetSystem<SynchronizationHelperSystem>();
