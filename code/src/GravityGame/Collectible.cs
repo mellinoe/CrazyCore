@@ -4,6 +4,7 @@ using Engine.Audio;
 using Engine.Physics;
 using Engine.Graphics;
 using Veldrid.Assets;
+using Engine.Behaviors;
 
 namespace GravityGame
 {
@@ -46,6 +47,28 @@ namespace GravityGame
                         _assetSystem.Database.LoadAsset(ParticleCollectionSoundEffect),
                         1.0f);
                     GameObject.AddComponent(effect);
+
+                    PointLight pointLight = GameObject.GetComponent<PointLight>();
+                    if (pointLight != null)
+                    {
+                        float elapsed = 0f;
+                        const float totalFadeTime = 1.3f;
+                        float initialIntensity = pointLight.Intensity;
+                        float initialRange = pointLight.Range;
+                        DelegateBehavior lightFader = new DelegateBehavior(deltaSeconds =>
+                        {
+                            elapsed += deltaSeconds;
+                            if (elapsed > totalFadeTime)
+                            {
+                                return;
+                            }
+
+                            pointLight.Intensity = MathUtil.Lerp(initialIntensity, 0f, elapsed / totalFadeTime);
+                            pointLight.Range = MathUtil.Lerp(initialRange, initialRange * 3f, elapsed / totalFadeTime);
+                        });
+                        GameObject.AddComponent(lightFader);
+                    }
+
                     particleSystem.EmissionRate = 0f;
                     particleSystem.ParticleLifetime = 10f;
                     Enabled = false;
