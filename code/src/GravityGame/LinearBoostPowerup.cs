@@ -6,6 +6,7 @@ using Engine.Assets;
 using Engine.Graphics;
 using System.Threading.Tasks;
 using System.Numerics;
+using System;
 
 namespace GravityGame
 {
@@ -55,8 +56,9 @@ namespace GravityGame
                 _currentAvailableBoosts += 1;
             }
 
+            Vector3 direction = _ballState.CurrentMotionDirection;
             if (_currentAvailableBoosts > 0
-                && _ballState.CurrentMotionDirection != Vector3.Zero
+                && direction != Vector3.Zero
                 && (_input.GetKeyDown(Veldrid.Platform.Key.ShiftLeft) || _input.GetKeyDown(Veldrid.Platform.Key.ShiftRight)))
             {
                 Boost();
