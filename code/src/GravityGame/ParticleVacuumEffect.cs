@@ -46,8 +46,15 @@ namespace GravityGame
         {
             _particleSystem.ModifyAllParticles((ref ParticleState ps) =>
             {
-                Vector3 direction = Vector3.Normalize(_vacuumTarget.Position - ps.Offset);
+                // SIMD BUG
+                Vector3 directionBad = Vector3.Normalize(_vacuumTarget.Position - ps.Offset); // This should be equivalent to "direction" on the next two lines.
+                Vector3 direction = new Vector3(_vacuumTarget.Position.X - ps.Offset.X, _vacuumTarget.Position.Y - ps.Offset.Y, _vacuumTarget.Position.Z - ps.Offset.Z);
+                direction = direction / direction.Length();
+                Console.WriteLine($"{directionBad} SIMD{Environment.NewLine}{direction} Manual");
+                Console.WriteLine($"P1:{_vacuumTarget.Position} P2:{ps.Offset}");
+
                 ps.Velocity = (ps.Velocity * .9f) + (direction * Acceleration * deltaSeconds);
+
                 if (Vector3.DistanceSquared(ps.Offset, _vacuumTarget.Position) <= DeletionDistance)
                 {
                     ps.Age = _particleSystem.ParticleLifetime;
