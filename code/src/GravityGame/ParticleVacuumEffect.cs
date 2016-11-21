@@ -46,9 +46,16 @@ namespace GravityGame
         {
             _particleSystem.ModifyAllParticles((ref ParticleState ps) =>
             {
-                Vector3 direction = Vector3.Normalize(_vacuumTarget.Position - ps.Offset);
+                // SIMD BUG: "direction" will be incorrect if we do the "difference" calculation inside the call to Normalize.
+                // https://github.com/dotnet/coreclr/issues/8220
+                Vector3 targetPosition = _vacuumTarget.Position;
+                Vector3 currentOffset = ps.Offset;
+                Vector3 difference = targetPosition - currentOffset;
+                Vector3 direction = Vector3.Normalize(difference);
+
                 ps.Velocity = (ps.Velocity * .9f) + (direction * Acceleration * deltaSeconds);
-                if (Vector3.DistanceSquared(ps.Offset, _vacuumTarget.Position) <= DeletionDistance)
+                float distance = difference.Length();
+                if (distance <= DeletionDistance)
                 {
                     ps.Age = _particleSystem.ParticleLifetime;
                     PlayCollectedSound();
