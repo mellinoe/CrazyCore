@@ -76,11 +76,13 @@ namespace GravityGame
     public class LevelLoadTriggerWithMenu : LevelLoadTrigger
     {
         private TimeControlSystem _timeSystem;
+        private InputSystem _input;
 
         protected override void Attached(SystemRegistry registry)
         {
             base.Attached(registry);
             _timeSystem = registry.GetSystem<TimeControlSystem>();
+            _input = registry.GetSystem<InputSystem>();
         }
 
         protected override void LoadLevel()
@@ -101,18 +103,15 @@ namespace GravityGame
             ImGui.SetNextWindowPosCenter(SetCondition.Always);
             if (ImGui.BeginWindow(string.Empty, WindowFlags.NoTitleBar | WindowFlags.NoResize | WindowFlags.NoCollapse | WindowFlags.NoMove))
             {
-                if (ImGui.Button("Next Level"))
+                if (ImGui.Button("Next Level (Space)"))
                 {
-                    SceneAsset scene = _assetSystem.Database.LoadAsset(LoadedScene, cache: false);
-                    _sls.LoadScene(scene);
+                    LoadNextLevel();
                 }
-                if (ImGui.Button("Retry"))
+                if (ImGui.Button("Retry (R)"))
                 {
-                    AssetID sceneID = "Scenes/" + _sls.LoadedScene.Name + ".scene";
-                    SceneAsset scene = _assetSystem.Database.LoadAsset<SceneAsset>(sceneID, cache: false);
-                    _sls.LoadScene(scene);
+                    RetryCurrentLevel();
                 }
-                if (ImGui.Button("Main Menu"))
+                if (ImGui.Button("Exit To Main Menu"))
                 {
                     AssetID sceneID = "Scenes/MainMenu.scene";
                     SceneAsset scene = _assetSystem.Database.LoadAsset<SceneAsset>(sceneID, cache: false);
@@ -125,7 +124,29 @@ namespace GravityGame
                 ImGui.PopFont();
             }
 
+            if (_input.GetKeyDown(Veldrid.Platform.Key.Space))
+            {
+                LoadNextLevel();
+            }
+            else if (_input.GetKeyDown(Veldrid.Platform.Key.R))
+            {
+                RetryCurrentLevel();
+            }
+
             return false;
+        }
+
+        private void RetryCurrentLevel()
+        {
+            AssetID sceneID = "Scenes/" + _sls.LoadedScene.Name + ".scene";
+            SceneAsset scene = _assetSystem.Database.LoadAsset<SceneAsset>(sceneID, cache: false);
+            _sls.LoadScene(scene);
+        }
+
+        private void LoadNextLevel()
+        {
+            SceneAsset scene = _assetSystem.Database.LoadAsset(LoadedScene, cache: false);
+            _sls.LoadScene(scene);
         }
     }
 }

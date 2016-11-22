@@ -42,6 +42,7 @@
     <Compile Include="ObjectTrackingZone.cs" />
     <Compile Include="ParticleVacuumEffect.cs" />
     <Compile Include="PathFollowingPlatform.cs" />
+    <Compile Include="PauseMenu.cs" />
     <Compile Include="PersistentStorage.cs" />
     <Compile Include="PlayerStageProgress.cs" />
     <Compile Include="PointCollector.cs" />

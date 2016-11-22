@@ -67,6 +67,7 @@ namespace GravityGame
             "Level3",
             "Level4",
             "Level5",
+            "Level6",
         };
     }
 }
