@@ -20,6 +20,7 @@ namespace GravityGame
             _physics = registry.GetSystem<PhysicsSystem>();
             _gs = registry.GetSystem<GraphicsSystem>();
             _input = registry.GetSystem<InputSystem>();
+            _time = (float)Math.PI / 2f;
         }
 
         public override void Update(float deltaSeconds)
