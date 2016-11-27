@@ -29,8 +29,11 @@ namespace GravityGame
         public float Yaw { get; set; } = 0f;
         public float Pitch { get; set; } = 0f;
 
+        public float MaxPich { get; set; } = -.15f;
+        public float MinPitch { get; set; } = -.95f;
+
         public bool IsOnGround { get; private set; }
-        public float RayHitCorrectionDistance { get; set; } = 0.3f;
+        public float RayHitCorrectionDistance { get; set; } = 0.5f;
 
         private float _followDistance = 6f;
         private float _minFollowDistance = 5f;
@@ -39,8 +42,6 @@ namespace GravityGame
         private float _zoomSpeed = .48f;
         private float _cameraTurnSpeed = .005f;
         private float _sprintFactor = 1f;
-        private float _maxPich = -.15f;
-        private float _minPitch = -.95f;
         private PhysicsSystem _physics;
         private readonly List<RayCastHit<RenderItem>> _rayHits = new List<RayCastHit<RenderItem>>();
 
@@ -127,7 +128,7 @@ namespace GravityGame
                 Yaw -= MathUtil.TwoPi;
             }
 
-            Pitch = MathUtil.Clamp(Pitch, _minPitch, _maxPich);
+            Pitch = MathUtil.Clamp(Pitch, MinPitch, MaxPich);
 
             float wheelDelta = _input.CurrentSnapshot.WheelDelta;
             if (wheelDelta != 0)
@@ -155,14 +156,14 @@ namespace GravityGame
             int hits = _gs.RayCast(ray, _rayHits);
             if (hits > 0)
             { 
-                float distance = _followDistance;
+                float distance = 0f;
                 foreach (var hit in _rayHits)
                 {
-                    if (hit.Distance < distance && hit.Item is Component)
+                    if (hit.Distance > distance && hit.Distance < _followDistance && hit.Item is Component)
                     {
                         if (((Component)hit.Item).GameObject != _ball)
                         {
-                            distance = hit.Distance + RayHitCorrectionDistance;
+                            distance = hit.Distance;
                             targetPosition = hit.Location + Transform.Forward * RayHitCorrectionDistance;
                         }
                     }

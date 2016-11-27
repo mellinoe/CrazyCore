@@ -3,6 +3,9 @@ using Engine;
 using Engine.Behaviors;
 using Engine.Physics;
 using System.Numerics;
+using Engine.Assets;
+using Engine.Graphics;
+using Veldrid.Graphics;
 
 namespace GravityGame
 {
@@ -11,8 +14,10 @@ namespace GravityGame
         private InputSystem _input;
         private SphereCollider _ballCollider;
         private ObjectTrackingZone _magnetTrackingZone;
-        private float _radius = 30f;
+        private float _radius = 60f;
         private SphereCollider _zoneSphereCollider;
+        private GameObject _magnetParticleGo;
+        private ParticleSystem _magnetParticles;
 
         public float Radius { get { return _radius; } set { _radius = value; OnRadiusChanged(); } }
 
@@ -24,6 +29,13 @@ namespace GravityGame
             _ballCollider = GameObject.GetComponent<SphereCollider>();
             _magnetTrackingZone = ObjectTrackingZone.Create(GameObject.Transform, Radius, "GravityGame.Magnet");
             _zoneSphereCollider = _magnetTrackingZone.GameObject.GetComponent<SphereCollider>();
+
+            AssetSystem assetSystem = registry.GetSystem<AssetSystem>();
+            _magnetParticleGo = assetSystem.Database.LoadAsset<SerializedPrefab>("Prefabs/MagnetParticles.prefab", false)
+                .Instantiate(registry.GetSystem<GameObjectQuerySystem>());
+            _magnetParticles = _magnetParticleGo.GetComponent<ParticleSystem>();
+            _magnetParticleGo.Transform.Parent = Transform;
+            _magnetParticleGo.Transform.LocalPosition = Vector3.Zero;
         }
 
         public override void Update(float deltaSeconds)
@@ -46,6 +58,10 @@ namespace GravityGame
 
         private void SetParticleState(MagnetState state)
         {
+            if (_magnetParticles != null)
+            {
+                _magnetParticles.ColorTint = state == MagnetState.Red ? RgbaFloat.Red : state == MagnetState.Blue ? RgbaFloat.Blue : RgbaFloat.LightGrey;
+            }
         }
 
         private void ApplyMagnetAttractions(MagnetState state, float deltaSeconds)

@@ -127,7 +127,6 @@ namespace GravityGame
                             break;
                         case PathBoundaryBehavior.Mirror:
                             _updateDirection *= -1;
-                            Debug.Assert(_updateDirection == 1f);
                             _currentTime += ((float)minTime - _currentTime) * _updateDirection * 2;
                             break;
                         case PathBoundaryBehavior.Wrap:
