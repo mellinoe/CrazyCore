@@ -27,7 +27,9 @@ namespace GravityGame
         {
             _input = registry.GetSystem<InputSystem>();
             _ballCollider = GameObject.GetComponent<SphereCollider>();
-            _magnetTrackingZone = ObjectTrackingZone.Create(GameObject.Transform, Radius, "GravityGame.Magnet");
+
+            int magnetTrackerLayer = registry.GetSystem<PhysicsSystem>().GetLayerByName("MagnetDetector");
+            _magnetTrackingZone = ObjectTrackingZone.Create(GameObject.Transform, Radius, "GravityGame.Magnet", magnetTrackerLayer);
             _zoneSphereCollider = _magnetTrackingZone.GameObject.GetComponent<SphereCollider>();
 
             AssetSystem assetSystem = registry.GetSystem<AssetSystem>();
@@ -71,7 +73,7 @@ namespace GravityGame
                 foreach (GameObject go in _magnetTrackingZone.ObjectsInArea)
                 {
                     Vector3 positionDifference = Transform.Position - go.Transform.Position;
-                    float distanceAttenuationFactor = 1 - (float)Math.Pow((positionDifference.Length() / Radius), 3.0);
+                    float distanceAttenuationFactor = (float)Math.Pow(1 - (positionDifference.Length() / Radius), 2.0);
                     distanceAttenuationFactor = Math.Max(0, distanceAttenuationFactor);
                     Magnet magnet = go.GetComponent<Magnet>();
                     Vector3 forceDir = Vector3.Normalize(positionDifference);
@@ -81,10 +83,12 @@ namespace GravityGame
                     }
 
                     float totalStrength = MagnetStrength + magnet.Strength;
+                    Vector3 frameImpulse = forceDir * totalStrength * distanceAttenuationFactor * deltaSeconds;
+                    magnet.SetCurrentImpulse(frameImpulse);
 
-                    _ballCollider.Entity.LinearMomentum += forceDir * totalStrength * distanceAttenuationFactor * deltaSeconds;
+                    _ballCollider.Entity.LinearMomentum += frameImpulse;
                     Collider otherCollider = go.GetComponent<Collider>();
-                    otherCollider.Entity.LinearMomentum += -forceDir * totalStrength * distanceAttenuationFactor * deltaSeconds;
+                    otherCollider.Entity.LinearMomentum += -frameImpulse;
                 }
             }
         }

@@ -16,13 +16,15 @@ namespace GravityGame
 
         public IEnumerable<GameObject> ObjectsInArea => _objectsInArea;
 
-        public static ObjectTrackingZone Create(Transform parent, float radius, string markerTypeName)
+        public static ObjectTrackingZone Create(Transform parent, float radius, string markerTypeName, int layer)
         {
             GameObject tracker = new GameObject(markerTypeName + "_Tracker");
             SphereCollider sphereCollider = new SphereCollider(radius);
             sphereCollider.IsTrigger = true;
             sphereCollider.IsAffectedByGravity = false;
             sphereCollider.Mass = 0f;
+            sphereCollider.Layer = layer;
+
             tracker.AddComponent(sphereCollider);
             ObjectTrackingZone zone = new ObjectTrackingZone();
             zone.ComponentMarkerTypeName = markerTypeName;
@@ -45,7 +47,8 @@ namespace GravityGame
 
         private void OnTriggerEntered(Collider other)
         {
-            if (other.GameObject.GetComponent(GetMarkerComponentType()) != null)
+            Component marker = other.GameObject.GetComponent(GetMarkerComponentType());
+            if (marker != null && marker.Enabled)
             {
                 _objectsInArea.Add(other.GameObject);
             }
