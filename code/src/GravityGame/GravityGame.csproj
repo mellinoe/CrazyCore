@@ -46,6 +46,7 @@
     <Compile Include="PlayerStageProgress.cs" />
     <Compile Include="PointCollector.cs" />
     <Compile Include="ReproHelper.cs" />
+    <Compile Include="ReproHelperZeroEquals.cs" />
     <Compile Include="Rotater.cs" />
     <Compile Include="StageCompletionInfo.cs" />
     <Compile Include="StageCompletionTrigger.cs" />

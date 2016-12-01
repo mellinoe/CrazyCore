@@ -6,6 +6,7 @@ using Engine.Assets;
 using Engine.Graphics;
 using System.Threading.Tasks;
 using System.Numerics;
+using System;
 
 namespace GravityGame
 {
@@ -59,6 +60,7 @@ namespace GravityGame
                 && _ballState.CurrentMotionDirection != Vector3.Zero
                 && (_input.GetKeyDown(Veldrid.Platform.Key.ShiftLeft) || _input.GetKeyDown(Veldrid.Platform.Key.ShiftRight)))
             {
+                Console.WriteLine("Motion vector is not zero.");
                 Boost();
                 _accumulatedTime = 0f;
                 _currentAvailableBoosts -= 1;
