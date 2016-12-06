@@ -53,7 +53,7 @@ namespace GravityGame
                 Vector3 difference = targetPosition - currentOffset;
                 Vector3 direction = Vector3.Normalize(difference);
 
-                ps.Velocity = (ps.Velocity * .9f) + (direction * Acceleration * deltaSeconds);
+                ps.Velocity = (ps.Velocity * (1 - .1f * (deltaSeconds * 60f)) + (direction * Acceleration * deltaSeconds));
                 float distance = difference.Length();
                 if (distance <= DeletionDistance)
                 {

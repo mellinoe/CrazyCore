@@ -32,7 +32,7 @@ namespace GravityGame
         {
             if (_particleSystem != null)
             {
-                float t = MathUtil.Clamp(_currentImpulse.Length() / MaxParticleForce, 0, 1);
+                float t = MathUtil.Clamp(_currentImpulse.Length() / (deltaSeconds / (1 / 60f)) / MaxParticleForce, 0, 1);
                 float size = MathUtil.Lerp(MinParticleSize, MaxParticleSize, t);
                 _particleSystem.StartingSize = size;
                 RgbaFloat color = _particleSystem.ColorTint;
