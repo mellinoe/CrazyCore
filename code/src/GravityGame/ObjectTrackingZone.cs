@@ -14,7 +14,7 @@ namespace GravityGame
         public string ComponentMarkerTypeName { get; set; }
         private Type GetMarkerComponentType() => Type.GetType(ComponentMarkerTypeName);
 
-        public IEnumerable<GameObject> ObjectsInArea => _objectsInArea;
+        public IList<GameObject> ObjectsInArea => _objectsInArea;
 
         public static ObjectTrackingZone Create(Transform parent, float radius, string markerTypeName, int layer)
         {

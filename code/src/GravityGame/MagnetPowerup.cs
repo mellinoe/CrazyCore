@@ -70,8 +70,9 @@ namespace GravityGame
         {
             if (state != MagnetState.None)
             {
-                foreach (GameObject go in _magnetTrackingZone.ObjectsInArea)
+                for (int i = 0; i < _magnetTrackingZone.ObjectsInArea.Count; i++)
                 {
+                    GameObject go = _magnetTrackingZone.ObjectsInArea[i];
                     Vector3 positionDifference = Transform.Position - go.Transform.Position;
                     float distanceAttenuationFactor = (float)Math.Pow(1 - (positionDifference.Length() / Radius), 2.0);
                     distanceAttenuationFactor = Math.Max(0, distanceAttenuationFactor);

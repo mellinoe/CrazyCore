@@ -39,7 +39,7 @@ namespace GravityGame
         protected override void Start(SystemRegistry registry)
         {
             _audioSystem = registry.GetSystem<AudioSystem>();
-            _lastSoundTime = DateTime.Now;
+            _lastSoundTime = DateTime.UtcNow;
         }
 
         public override void Update(float deltaSeconds)
@@ -70,7 +70,7 @@ namespace GravityGame
 
         private void PlayCollectedSound()
         {
-            DateTime currentTime = DateTime.Now;
+            DateTime currentTime = DateTime.UtcNow;
             if ((currentTime - _lastSoundTime).TotalSeconds > _soundInterval)
             {
                 float pitch = _previousPitch + (0.03f * _pitchDirection);
