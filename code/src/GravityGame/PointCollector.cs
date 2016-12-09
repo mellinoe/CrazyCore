@@ -30,7 +30,9 @@ namespace GravityGame
             Text2D text = GameObject.GetComponent<Text2D>();
             if (text != null)
             {
-                text.Text = "Points: " + _collectedPoints;
+                text.ClearText();
+                text.Append("Points: ");
+                text.Append((uint)_collectedPoints);
             }
         }
     }

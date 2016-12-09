@@ -20,7 +20,12 @@ namespace GravityGame
         public override void Update(float deltaSeconds)
         {
             _elapsed += TimeSpan.FromSeconds(deltaSeconds);
-            _text.Text = $"{_elapsed.Minutes}:{_elapsed.Seconds.ToString("00")}.{(_elapsed.Milliseconds / 10).ToString("00")}";
+            _text.ClearText();
+            _text.Append((uint)_elapsed.Minutes, 2);
+            _text.Append(':');
+            _text.Append((uint)_elapsed.Seconds, 2);
+            _text.Append('.');
+            _text.Append((uint)_elapsed.Milliseconds / 10, 2);
         }
     }
 }
