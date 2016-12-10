@@ -18,7 +18,9 @@ namespace GravityGame
         {
             if (other.Entity.LinearVelocity.LengthSquared() != 0)
             {
-                Vector3 direction = Vector3.Normalize(other.Entity.LinearVelocity);
+                // SIMD bug: Do not inline the next two calls.
+                Vector3 otherDirection = other.Entity.LinearVelocity;
+                Vector3 direction = Vector3.Normalize(otherDirection);
                 Vector3 newLinearVelocity = direction * LaunchForce;
                 Debug.Assert(!MathUtil.ContainsNaN(newLinearVelocity));
                 other.Entity.LinearVelocity = newLinearVelocity;
