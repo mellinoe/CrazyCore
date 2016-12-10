@@ -55,7 +55,13 @@ namespace GravityGame
                     _rollSource.Play();
                 }
 
-                _rollSource.Gain = ratio * MaxVolume;
+                float gain = ratio * MaxVolume;
+                if (float.IsNaN(gain))
+                {
+                    gain = 1f;
+                }
+
+                _rollSource.Gain = gain;
             }
             else
             {
