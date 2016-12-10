@@ -23,6 +23,7 @@
     <Compile Include="BallPowerup.cs" />
     <Compile Include="BallState.cs" />
     <Compile Include="BoostPad.cs" />
+    <Compile Include="CameraSeeThrough.cs" />
     <Compile Include="CharacterMarker.cs" />
     <Compile Include="Collectible.cs" />
     <Compile Include="CursorHider.cs" />
@@ -49,6 +50,7 @@
     <Compile Include="Rotater.cs" />
     <Compile Include="StageCompletionInfo.cs" />
     <Compile Include="StageCompletionTrigger.cs" />
+    <Compile Include="TempTransparency.cs" />
     <Compile Include="TimeDisplay.cs" />
     <Compile Include="TransformFollow.cs" />
     <Compile Include="TriggerActivator.cs" />

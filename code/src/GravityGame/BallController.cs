@@ -23,6 +23,9 @@ namespace GravityGame
         private BallState _ballState;
         private GraphicsSystem _gs;
 
+        private HashSet<GameObject> _previousFrameTransparents = new HashSet<GameObject>();
+        private HashSet<GameObject> _newFrameTransparents = new HashSet<GameObject>();
+
         public string BallName { get; set; }
         public float PushForce { get; set; } = 100f;
 
@@ -157,17 +160,44 @@ namespace GravityGame
             if (hits > 0)
             { 
                 float distance = 0f;
+                _newFrameTransparents.Clear();
                 foreach (var hit in _rayHits)
                 {
                     if (hit.Distance > distance && hit.Distance < _followDistance && hit.Item is Component)
                     {
                         if (((Component)hit.Item).GameObject != _ball)
                         {
-                            distance = hit.Distance;
-                            targetPosition = hit.Location + Transform.Forward * RayHitCorrectionDistance;
+                            if (((Component)hit.Item).GameObject.GetComponent<CameraSeeThrough>() != null)
+                            {
+                                _newFrameTransparents.Add(((Component)hit.Item).GameObject);
+                            }
+                            else
+                            {
+                                distance = hit.Distance;
+                                targetPosition = hit.Location + Transform.Forward * RayHitCorrectionDistance;
+                            }
                         }
                     }
                 }
+
+                foreach (GameObject go in _previousFrameTransparents)
+                {
+                    if (!_newFrameTransparents.Contains(go))
+                    {
+                        go.RemoveAll<TempTransparency>();
+                    }
+                }
+                foreach (GameObject go in _newFrameTransparents)
+                {
+                    if (!_previousFrameTransparents.Contains(go))
+                    {
+                        go.AddComponent(new TempTransparency() { OverrideOpacity = 0.33f });
+                    }
+                }
+
+                var temp = _previousFrameTransparents;
+                _previousFrameTransparents = _newFrameTransparents;
+                _newFrameTransparents = temp;
             }
 
             Transform.Position = targetPosition;
