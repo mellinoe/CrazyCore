@@ -22,6 +22,18 @@ namespace GravityGame
         private AudioSourceComponent _audioSource;
         private Font _font;
         private AssetID[] _allScenes;
+        private string[] _displayModeOptions =
+        {
+            "Normal",
+            "Exclusive Fullscreen",
+            "Borderless Fullscreen"
+        };
+        private string[] _graphicsBackEndOptions =
+{
+            "Default",
+            "Direct3D11",
+            "OpenGL"
+        };
 
         public MainMenu()
         {
@@ -58,6 +70,10 @@ namespace GravityGame
                         }
                     }
                 }
+            }
+            else
+            {
+                _font = MenuGlobals.MenuFont;
             }
         }
 
@@ -118,6 +134,43 @@ namespace GravityGame
 
         private void DrawOptionsPage()
         {
+            float renderQuality = GravityGamePreferences.Instance.RenderQuality;
+            if (ImGui.DragFloat("Render Quality", ref renderQuality, 0.3f, 1.0f, 0.05f))
+            {
+                renderQuality = MathUtil.Clamp(renderQuality, 0.3f, 1.0f);
+                GravityGamePreferences.Instance.RenderQuality = renderQuality;
+                _gs.RenderQuality = renderQuality;
+            }
+            if (ImGui.IsLastItemHovered())
+            {
+                ImGui.SetTooltip("Changes the game's render quality by modifying the engine's internal resolution.");
+            }
+
+            int currentIndex = (int)GravityGamePreferences.Instance.WindowStatePreference;
+            if (ImGui.Combo("Display Mode", ref currentIndex, _displayModeOptions))
+            {
+                var newState = (InitialWindowStatePreference)currentIndex;
+                if (GravityGamePreferences.Instance.WindowStatePreference != newState)
+                {
+                    GravityGamePreferences.Instance.WindowStatePreference = newState;
+                    _gs.Context.Window.WindowState = GraphicsPreferencesUtil.MapPreferencesState(newState);
+                }
+
+            }
+
+            currentIndex = (int)GravityGamePreferences.Instance.BackEndPreference;
+            if (ImGui.Combo("Graphics Backend", ref currentIndex, _graphicsBackEndOptions))
+            {
+                var newState = (GraphicsBackEndPreference)currentIndex;
+                if (GravityGamePreferences.Instance.BackEndPreference != newState)
+                {
+                    GravityGamePreferences.Instance.BackEndPreference = newState;
+                }
+            }
+            if (ImGui.IsLastItemHovered())
+            {
+                ImGui.SetTooltip("Requires a restart to take effect.");
+            }
         }
 
         private void DrawPlayPage()

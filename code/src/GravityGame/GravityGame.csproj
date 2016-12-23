@@ -30,6 +30,7 @@
     <Compile Include="DelegateMenu.cs" />
     <Compile Include="Elevator.cs" />
     <Compile Include="GravityChanger.cs" />
+    <Compile Include="GravityGamePreferences.cs" />
     <Compile Include="GravityInverter.cs" />
     <Compile Include="LinearBoostPowerup.cs" />
     <Compile Include="JumpPowerup.cs" />
