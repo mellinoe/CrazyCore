@@ -29,7 +29,7 @@ namespace GravityGame
             "Borderless Fullscreen"
         };
         private string[] _graphicsBackEndOptions =
-{
+        {
             "Default",
             "Direct3D11",
             "OpenGL"
@@ -116,6 +116,10 @@ namespace GravityGame
             {
                 _menuFunc = DrawOptionsPage;
             }
+            if (ImGui.Button("Controls", new Vector2(250, 60)))
+            {
+                _menuFunc = DrawControlsPage;
+            }
             if (ImGui.Button("Credits", new Vector2(250, 60)))
             {
                 _menuFunc = DrawCreditsPage;
@@ -171,6 +175,23 @@ namespace GravityGame
             {
                 ImGui.SetTooltip("Requires a restart to take effect.");
             }
+        }
+
+        private void DrawControlsPage()
+        {
+            ImGui.Columns(2, "ControlsColumns", true);
+
+            ImGui.Text("Forward"); ImGui.NextColumn(); ImGui.Text("W"); ImGui.NextColumn();
+            ImGui.Text("Left"); ImGui.NextColumn(); ImGui.Text("A"); ImGui.NextColumn();
+            ImGui.Text("Right"); ImGui.NextColumn(); ImGui.Text("S"); ImGui.NextColumn();
+            ImGui.Text("Backward"); ImGui.NextColumn(); ImGui.Text("D"); ImGui.NextColumn();
+            ImGui.Text("Move Camera"); ImGui.NextColumn(); ImGui.Text("Mouse"); ImGui.NextColumn();
+            ImGui.Text("Jump (Powerup)"); ImGui.NextColumn(); ImGui.Text("Space"); ImGui.NextColumn();
+            ImGui.Text("Boost (Powerup)"); ImGui.NextColumn(); ImGui.Text("Shift"); ImGui.NextColumn();
+            ImGui.Text("Red Magnet (Powerup)"); ImGui.NextColumn(); ImGui.Text("Left Mouse"); ImGui.NextColumn();
+            ImGui.Text("Blue Magnet (Powerup)"); ImGui.NextColumn(); ImGui.Text("Right Mouse"); ImGui.NextColumn();
+            ImGui.Text("Open Menu"); ImGui.NextColumn(); ImGui.Text("Escape"); ImGui.NextColumn();
+            ImGui.Text("Restart Level"); ImGui.NextColumn(); ImGui.Text("R (With Menu Open)"); ImGui.NextColumn();
         }
 
         private void DrawPlayPage()
