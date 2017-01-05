@@ -186,6 +186,7 @@ namespace GravityGame
             ImGui.Text("Right"); ImGui.NextColumn(); ImGui.Text("S"); ImGui.NextColumn();
             ImGui.Text("Backward"); ImGui.NextColumn(); ImGui.Text("D"); ImGui.NextColumn();
             ImGui.Text("Move Camera"); ImGui.NextColumn(); ImGui.Text("Mouse"); ImGui.NextColumn();
+            ImGui.Text("Camera Zoom"); ImGui.NextColumn(); ImGui.Text("Mouse Wheel"); ImGui.NextColumn();
             ImGui.Text("Jump (Powerup)"); ImGui.NextColumn(); ImGui.Text("Space"); ImGui.NextColumn();
             ImGui.Text("Boost (Powerup)"); ImGui.NextColumn(); ImGui.Text("Shift"); ImGui.NextColumn();
             ImGui.Text("Red Magnet (Powerup)"); ImGui.NextColumn(); ImGui.Text("Left Mouse"); ImGui.NextColumn();
