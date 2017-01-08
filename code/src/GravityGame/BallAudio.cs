@@ -19,8 +19,6 @@ namespace GravityGame
         private AudioSourceComponent _thudSource;
         private Collider _collider;
 
-        private int _currentContacts;
-
         public float MaxVolume { get; set; } = 1.0f;
         public float MaxVelocityForVolume { get; set; } = 10.0f;
         public float ThudMaxImpulseForVolume { get; set; } = 50.0f;
@@ -45,11 +43,12 @@ namespace GravityGame
         public override void Update(float deltaSeconds)
         {
             ReadOnlyList<CollidablePairHandler> currentPairs = _collider.Entity.CollisionInformation.Pairs;
-            CheckContactPairs(currentPairs);
-            _currentContacts = currentPairs.Count;
-            if (_currentContacts > 0)
+            Vector3 currentImpulse = CheckContactPairs(currentPairs);
+            if (currentImpulse.LengthSquared() > 0f)
             {
-                float ratio = _collider.Entity.LinearVelocity.Length() / MaxVelocityForVolume;
+                Vector3 linearVelocity = _collider.Entity.LinearVelocity;
+                Vector3 tangentMotion = linearVelocity - MathUtil.Projection(linearVelocity, Vector3.Normalize(currentImpulse));
+                float ratio = tangentMotion.Length() / MaxVelocityForVolume;
                 if (_rollSource.Gain == 0.0f)
                 {
                     _rollSource.Play();
@@ -70,18 +69,27 @@ namespace GravityGame
             }
         }
 
-        private void CheckContactPairs(ReadOnlyList<CollidablePairHandler> pairs)
+        private Vector3 CheckContactPairs(ReadOnlyList<CollidablePairHandler> pairs)
         {
+            bool thudded = false;
+            Vector3 totalImpulse = Vector3.Zero;
             foreach (var pair in pairs)
             {
                 foreach (var contactInfo in pair.Contacts)
                 {
+                    totalImpulse += contactInfo.NormalImpulse * contactInfo.Contact.Normal;
                     if (contactInfo.NormalImpulse > ThudThreshold)
                     {
-                        PlayThud(contactInfo.NormalImpulse / ThudMaxImpulseForVolume);
+                        if (!thudded)
+                        {
+                            thudded = true;
+                            PlayThud(contactInfo.NormalImpulse / ThudMaxImpulseForVolume);
+                        }
                     }
                 }
             }
+
+            return totalImpulse;
         }
     }
 }
