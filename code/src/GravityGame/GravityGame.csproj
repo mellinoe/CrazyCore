@@ -25,6 +25,7 @@
     <Compile Include="BoostPad.cs" />
     <Compile Include="CameraSeeThrough.cs" />
     <Compile Include="CharacterMarker.cs" />
+    <Compile Include="CinematicCamera.cs" />
     <Compile Include="Collectible.cs" />
     <Compile Include="CursorHider.cs" />
     <Compile Include="DelegateMenu.cs" />
