@@ -3,6 +3,7 @@ using Engine.Behaviors;
 using Engine.Graphics;
 using System.Numerics;
 using Veldrid.Platform;
+using System.Runtime.InteropServices;
 
 namespace GravityGame
 {
@@ -39,12 +40,16 @@ namespace GravityGame
                     CursorVisible = !CursorVisible;
                 }
 
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+                {
+                    window.CursorVisible = true;
+                }
                 bool currentVisibility = CursorVisible || MenuGlobals.NumMenusOpen > 0;
-                window.CursorVisible = currentVisibility;
                 if (ForceCenter && !currentVisibility)
                 {
                     _input.MousePosition = new Vector2(window.Width / 2f, window.Height / 2f);
                 }
+                window.CursorVisible = currentVisibility;
             }
         }
     }
