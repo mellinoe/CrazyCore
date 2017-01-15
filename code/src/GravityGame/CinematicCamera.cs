@@ -23,6 +23,7 @@ namespace GravityGame
         private Vector3 _finalPosition;
         private Quaternion _finalRotation;
         private float _moveRate = 1f;
+        private GameObject[] _extraDisabledGameObjects;
 
         public string WaypointParentName { get; set; }
 
@@ -30,6 +31,8 @@ namespace GravityGame
 
         public string BallName { get; set; } = "Ball";
         public string PlayerCameraName { get; set; } = "PlayerCamera";
+
+        public string[] ExtraDisabledGameObjectNames { get; set; }
 
         public static bool SkipCinematicCamera { get; set; } = false;
 
@@ -45,6 +48,12 @@ namespace GravityGame
 
             _input = registry.GetSystem<InputSystem>();
             GameObjectQuerySystem goqs = registry.GetSystem<GameObjectQuerySystem>();
+
+            _extraDisabledGameObjects = ExtraDisabledGameObjectNames.Select(name => goqs.FindByName(name)).ToArray();
+            foreach (var go in _extraDisabledGameObjects)
+            {
+                go.Enabled = false;
+            }
 
             GameObject ball = goqs.FindByName(BallName);
             _cameraGO = goqs.FindByName(PlayerCameraName);
@@ -144,15 +153,7 @@ namespace GravityGame
                     / (_waypoints[_currentWaypointIndex].Time - _waypoints[_currentWaypointIndex - 1].Time);
             }
 
-            //Vector3 fromPos = _currentWaypointIndex == 0 ? _initialPosition : _waypoints[_currentWaypointIndex - 1].Transform.Position;
-            //Vector3 toPos = _waypoints[_currentWaypointIndex].Transform.Position;
-            //Transform.Position = Vector3.Lerp(fromPos, toPos, t);
-
             Transform.Position = _positionCurve.Evaluate(_currentTime);
-
-            //Quaternion fromRot = _currentWaypointIndex == 0 ? _initialRotation : _waypoints[_currentWaypointIndex - 1].Transform.Rotation;
-            //Quaternion toRot = _waypoints[_currentWaypointIndex].Transform.Rotation;
-            //Transform.Rotation = Quaternion.Slerp(fromRot, toRot, t);
             Transform.Rotation = _lookDirCurve.Evaluate(_currentTime);
         }
 
@@ -162,6 +163,10 @@ namespace GravityGame
             Transform.Rotation = _lookDirCurve.Evaluate(_endTime);
             GameObject.RemoveComponent(this);
             _cameraGO.GetComponent<BallController>().Enabled = true;
+            foreach (var go in _extraDisabledGameObjects)
+            {
+                go.Enabled = true;
+            }
         }
     }
 
