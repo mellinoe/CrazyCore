@@ -24,7 +24,7 @@ namespace GravityGame
 
         protected override void PostDisabled()
         {
-            if (_gs != null)
+            if (_gs != null && _gs.Context.Window.Exists)
             {
                 _gs.Context.Window.CursorVisible = true;
             }
@@ -33,7 +33,7 @@ namespace GravityGame
         public override void Update(float deltaSeconds)
         {
             Window window = _gs.Context.Window;
-            if (window.Focused)
+            if (window.Exists && window.Focused)
             {
                 if (_input.GetKeyDown(Key.Escape))
                 {
