@@ -35,9 +35,10 @@ namespace GravityGame
         private GraphicsBackEndPreference _backEndPreference;
         public GraphicsBackEndPreference BackEndPreference
         {
-            get {
-                Console.WriteLine("Back end preference is " + _backEndPreference);
-                return _backEndPreference; }
+            get
+            {
+                return _backEndPreference;
+            }
             set
             {
                 _backEndPreference = value;
