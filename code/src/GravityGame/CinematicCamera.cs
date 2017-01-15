@@ -4,12 +4,13 @@ using Engine;
 using System.Numerics;
 using System.Linq;
 using BEPUphysics.Paths;
+using Engine.Physics;
 
 namespace GravityGame
 {
     public class CinematicCamera : Behavior
     {
-        private CinematicCameraWaypoint[] _waypoints;
+        private WaypointInfo[] _waypoints;
         private Vector3 _initialPosition;
         private Quaternion _initialRotation;
         private float _currentTime;
@@ -17,22 +18,71 @@ namespace GravityGame
         private int _currentWaypointIndex;
         private CardinalSpline3D _positionCurve;
         private QuaternionSlerpCurve _lookDirCurve;
+        private GameObject _cameraGO;
+        private InputSystem _input;
+        private Vector3 _finalPosition;
+        private Quaternion _finalRotation;
+        private float _moveRate = 1f;
 
         public string WaypointParentName { get; set; }
 
+        public float RestAtCameraPositionTime { get; set; } = -1f;
+
+        public string BallName { get; set; } = "Ball";
+        public string PlayerCameraName { get; set; } = "PlayerCamera";
+
+        public static bool SkipCinematicCamera { get; set; } = false;
+
         protected override void Start(SystemRegistry registry)
         {
+            if (SkipCinematicCamera)
+            {
+                SkipCinematicCamera = false;
+                Enabled = false;
+                GameObject.RemoveComponent(this);
+                return;
+            }
+
+            _input = registry.GetSystem<InputSystem>();
             GameObjectQuerySystem goqs = registry.GetSystem<GameObjectQuerySystem>();
+
+            GameObject ball = goqs.FindByName(BallName);
+            _cameraGO = goqs.FindByName(PlayerCameraName);
+            BallController bc = _cameraGO.GetComponent<BallController>();
+            bc.Enabled = false;
+            bc.GetEffectiveCameraTransform(
+                ball.Transform.Position,
+                registry.GetSystem<PhysicsSystem>().Space.ForceUpdater.Gravity,
+                out _finalPosition,
+                out _finalRotation);
+
             GameObject waypointParentGo = goqs.FindByName(WaypointParentName);
-            _waypoints = waypointParentGo.Transform.Children.Select(t => t.GameObject.GetComponent<CinematicCameraWaypoint>())
-                .OrderBy(ccw => ccw.Time).ToArray();
+            var wps = waypointParentGo.Transform.Children.Select(t => t.GameObject.GetComponent<CinematicCameraWaypoint>())
+                .OrderBy(ccw => ccw.Time).Select(ccw => ccw.GetWaypointInfo());
             _initialPosition = Transform.Position;
             _initialRotation = Transform.Rotation;
-            _endTime = _waypoints.Last().Time;
+            float lastWaypointTime = wps.Last().Time;
+            if (RestAtCameraPositionTime != -1f && lastWaypointTime > RestAtCameraPositionTime)
+            {
+                throw new InvalidOperationException(
+                    "Cannot rest at camera at time " + RestAtCameraPositionTime + ". The last waypoint has time " + lastWaypointTime);
+            }
+            else if (RestAtCameraPositionTime == -1f)
+            {
+                _endTime = lastWaypointTime;
+            }
+            else
+            {
+                _endTime = RestAtCameraPositionTime;
+            }
+
+            WaypointInfo cameraRestWP = new WaypointInfo(RestAtCameraPositionTime, _finalPosition, _finalRotation);
+            _waypoints = wps.Append(cameraRestWP).ToArray();
+
             while (_waypoints[_currentWaypointIndex].Time == 0)
             {
-                _initialPosition = _waypoints[_currentWaypointIndex].Transform.Position;
-                _initialRotation = _waypoints[_currentWaypointIndex].Transform.Rotation;
+                _initialPosition = _waypoints[_currentWaypointIndex].Position;
+                _initialRotation = _waypoints[_currentWaypointIndex].Rotation;
                 _currentWaypointIndex += 1;
             }
 
@@ -41,32 +91,38 @@ namespace GravityGame
             _positionCurve.PreLoop = CurveEndpointBehavior.Clamp;
             _positionCurve.PostLoop = CurveEndpointBehavior.Clamp;
 
-            _lookDirCurve = new  QuaternionSlerpCurve();
+            _lookDirCurve = new QuaternionSlerpCurve();
             _lookDirCurve.PreLoop = CurveEndpointBehavior.Clamp;
             _lookDirCurve.PostLoop = CurveEndpointBehavior.Clamp;
 
             if (_waypoints.Any())
             {
-                CinematicCameraWaypoint firstWP = _waypoints.First();
-                _positionCurve.ControlPoints.Add(firstWP.Time, firstWP.Transform.Position);
-                _lookDirCurve.ControlPoints.Add(firstWP.Time, firstWP.Transform.Rotation);
+                WaypointInfo firstWP = _waypoints.First();
+                _positionCurve.ControlPoints.Add(firstWP.Time, firstWP.Position);
+                _lookDirCurve.ControlPoints.Add(firstWP.Time, firstWP.Rotation);
             }
             foreach (var waypoint in _waypoints)
             {
-                _positionCurve.ControlPoints.Add(waypoint.Time, waypoint.Transform.Position);
-                _lookDirCurve.ControlPoints.Add(waypoint.Time, waypoint.Transform.Rotation);
+                _positionCurve.ControlPoints.Add(waypoint.Time, waypoint.Position);
+                _lookDirCurve.ControlPoints.Add(waypoint.Time, waypoint.Rotation);
             }
+
             if (_waypoints.Any())
             {
-                CinematicCameraWaypoint lastWP = _waypoints.Last();
-                _positionCurve.ControlPoints.Add(lastWP.Time, lastWP.Transform.Position);
-                _lookDirCurve.ControlPoints.Add(lastWP.Time, lastWP.Transform.Rotation);
+                WaypointInfo lastWP = _waypoints.Last();
+                _positionCurve.ControlPoints.Add(lastWP.Time, lastWP.Position);
+                _lookDirCurve.ControlPoints.Add(lastWP.Time, lastWP.Rotation);
             }
         }
 
         public override void Update(float deltaSeconds)
         {
-            _currentTime += deltaSeconds;
+            if (_input.GetKeyDown(Veldrid.Platform.Key.Space))
+            {
+                _moveRate = _moveRate == 10f ? 1f : 10f;
+            }
+
+            _currentTime += deltaSeconds * _moveRate;
             if (_currentTime >= _endTime)
             {
                 FinalWaypointReached();
@@ -102,7 +158,10 @@ namespace GravityGame
 
         private void FinalWaypointReached()
         {
+            Transform.Position = _positionCurve.Evaluate(_endTime);
+            Transform.Rotation = _lookDirCurve.Evaluate(_endTime);
             GameObject.RemoveComponent(this);
+            _cameraGO.GetComponent<BallController>().Enabled = true;
         }
     }
 
@@ -124,6 +183,25 @@ namespace GravityGame
 
         protected override void Removed(SystemRegistry registry)
         {
+        }
+
+        public WaypointInfo GetWaypointInfo()
+        {
+            return new WaypointInfo(Time, Transform.Position, Transform.Rotation);
+        }
+    }
+
+    public struct WaypointInfo
+    {
+        public readonly float Time;
+        public readonly Vector3 Position;
+        public readonly Quaternion Rotation;
+
+        public WaypointInfo(float time, Vector3 position, Quaternion rotation)
+        {
+            Time = time;
+            Position = position;
+            Rotation = rotation;
         }
     }
 }

@@ -75,6 +75,7 @@ namespace GravityGame
         {
             AssetID sceneID = "Scenes/" + _sls.LoadedScene.Name + ".scene";
             SceneAsset scene = _as.Database.LoadAsset<SceneAsset>(sceneID, cache: false);
+            CinematicCamera.SkipCinematicCamera = true;
             _sls.LoadScene(scene);
         }
 

@@ -38,7 +38,7 @@ namespace GravityGame
         public bool IsOnGround { get; private set; }
         public float RayHitCorrectionDistance { get; set; } = 0.5f;
 
-        private float _followDistance = 6f;
+        private float _followDistance = 10f;
         private float _minFollowDistance = 5f;
         private float _maxFollowDistance = 25f;
 
@@ -201,6 +201,21 @@ namespace GravityGame
             }
 
             Transform.Position = targetPosition;
+        }
+
+        public void GetEffectiveCameraTransform(Vector3 ballPosition, Vector3 gravityDir, out Vector3 position, out Quaternion rotation)
+        {
+            rotation =
+                Quaternion.CreateFromAxisAngle(Vector3.UnitY, Yaw)
+                *
+                Quaternion.CreateFromAxisAngle(Vector3.UnitX, Pitch)
+                ;
+            Quaternion gravityFactor = MathUtil.FromToRotation(Vector3.UnitY, -gravityDir);
+            rotation = Quaternion.Concatenate(rotation, gravityFactor);
+
+            var forward = Vector3.Transform(-Vector3.UnitZ, rotation);
+
+            position = ballPosition - forward * _followDistance;
         }
     }
 }
