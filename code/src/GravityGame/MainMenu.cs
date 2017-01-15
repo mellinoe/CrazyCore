@@ -65,7 +65,11 @@ namespace GravityGame
                         stream.CopyTo(copyTarget);
                         fixed (byte* bytePtr = fontBytes)
                         {
-                            _font = ImGui.GetIO().FontAtlas.AddFontFromMemoryTTF(new IntPtr(bytePtr), (int)stream.Length, 48);
+                            FontConfig fc;
+                            fc.OversampleH = 3;
+                            fc.OversampleV = 1;
+                            IntPtr fcPtr = new IntPtr(&fc);
+                            _font = ImGui.GetIO().FontAtlas.AddFontFromMemoryTTF(new IntPtr(bytePtr), (int)stream.Length, 48, fcPtr);
                             MenuGlobals.MenuFont = _font;
                         }
                     }
