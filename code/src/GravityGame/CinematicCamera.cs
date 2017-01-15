@@ -49,7 +49,14 @@ namespace GravityGame
             _input = registry.GetSystem<InputSystem>();
             GameObjectQuerySystem goqs = registry.GetSystem<GameObjectQuerySystem>();
 
-            _extraDisabledGameObjects = ExtraDisabledGameObjectNames.Select(name => goqs.FindByName(name)).ToArray();
+            if (ExtraDisabledGameObjectNames != null)
+            {
+                _extraDisabledGameObjects = ExtraDisabledGameObjectNames.Select(name => goqs.FindByName(name)).ToArray();
+            }
+            else
+            {
+                _extraDisabledGameObjects = Array.Empty<GameObject>();
+            }
             foreach (var go in _extraDisabledGameObjects)
             {
                 go.Enabled = false;
