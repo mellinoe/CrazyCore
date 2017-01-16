@@ -19,6 +19,8 @@ namespace GravityGame
         public AssetRef<SceneAsset> LoadedScene { get; set; }
         public AssetRef<WaveFile> AudioClip { get; set; }
         public float Volume { get; set; } = 1.0f;
+        public bool DisableCinematicCameraEffect { get; set; } = false;
+
         public event Action<GameObject> LevelLoadTriggered;
 
         protected override void Attached(SystemRegistry registry)
@@ -68,6 +70,11 @@ namespace GravityGame
 
         protected virtual void LoadLevel()
         {
+            if (DisableCinematicCameraEffect)
+            {
+                CinematicCamera.SkipCinematicCamera = true;
+            }
+
             SceneAsset scene = _assetSystem.Database.LoadAsset(LoadedScene, cache: false);
             _sls.LoadScene(scene);
         }
