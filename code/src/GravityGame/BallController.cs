@@ -38,6 +38,8 @@ namespace GravityGame
         public bool IsOnGround { get; private set; }
         public float RayHitCorrectionDistance { get; set; } = 0.5f;
 
+        public bool RequireMouseClickForCamera { get; set; } = false;
+
         private float _followDistance = 10f;
         private float _minFollowDistance = 5f;
         private float _maxFollowDistance = 25f;
@@ -119,8 +121,13 @@ namespace GravityGame
             _ballState.CurrentMotionDirection = motionDir;
 
             Vector2 mouseDelta = _input.MouseDelta;
-            Yaw -= mouseDelta.X * _cameraTurnSpeed;
-            Pitch -= mouseDelta.Y * _cameraTurnSpeed;
+
+            if (!RequireMouseClickForCamera 
+                || (!ImGuiNET.ImGui.IsMouseHoveringAnyWindow() && (_input.GetMouseButton(MouseButton.Left) || _input.GetMouseButton(MouseButton.Right))))
+            {
+                Yaw -= mouseDelta.X * _cameraTurnSpeed;
+                Pitch -= mouseDelta.Y * _cameraTurnSpeed;
+            }
 
             while (Yaw <= -MathUtil.TwoPi)
             {
@@ -134,7 +141,7 @@ namespace GravityGame
             Pitch = MathUtil.Clamp(Pitch, MinPitch, MaxPich);
 
             float wheelDelta = _input.CurrentSnapshot.WheelDelta;
-            if (wheelDelta != 0)
+            if (wheelDelta != 0 && !ImGuiNET.ImGui.IsMouseHoveringAnyWindow())
             {
                 _followDistance = _followDistance + (-wheelDelta * _zoomSpeed);
                 _followDistance = Math.Min(_maxFollowDistance, Math.Max(_minFollowDistance, _followDistance));
