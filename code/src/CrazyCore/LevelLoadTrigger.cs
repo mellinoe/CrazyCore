@@ -85,6 +85,8 @@ namespace CrazyCore
         private TimeControlSystem _timeSystem;
         private InputSystem _input;
 
+        public bool IsFinalLevel { get; set; } = false;
+
         protected override void Attached(SystemRegistry registry)
         {
             base.Attached(registry);
@@ -106,13 +108,20 @@ namespace CrazyCore
             {
                 ImGui.PushFont(MenuGlobals.MenuFont);
             }
-            ImGui.SetNextWindowSize(displaySize * new Vector2(0.7f, 1f) - new Vector2(0, 20), SetCondition.Always);
+            ImGui.SetNextWindowSize(displaySize * new Vector2(0.7f, 1f) - new Vector2(0, 160), SetCondition.Always);
             ImGui.SetNextWindowPosCenter(SetCondition.Always);
             if (ImGui.BeginWindow(string.Empty, WindowFlags.NoTitleBar | WindowFlags.NoResize | WindowFlags.NoCollapse | WindowFlags.NoMove))
             {
-                if (ImGui.Button("Next Level (Space)"))
+                if (IsFinalLevel)
                 {
-                    LoadNextLevel();
+                    ImGui.Text("Congratulations, you've beaten the final level! Thanks for playing!");
+                }
+                else
+                {
+                    if (ImGui.Button("Next Level (Space)"))
+                    {
+                        LoadNextLevel();
+                    }
                 }
                 if (ImGui.Button("Retry (R)"))
                 {
