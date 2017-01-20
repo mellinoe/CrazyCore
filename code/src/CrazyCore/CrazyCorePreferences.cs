@@ -21,7 +21,7 @@ namespace CrazyCore
             }
         }
 
-        private InitialWindowStatePreference _windowStatePreference;
+        private InitialWindowStatePreference _windowStatePreference = InitialWindowStatePreference.ExclusiveFullScreen;
         public InitialWindowStatePreference WindowStatePreference
         {
             get { return _windowStatePreference; }
