@@ -1,6 +1,3 @@
-[submodule "code/corebuild"]
-	path = code/corebuild
-	url = https://github.com/mellinoe/corebuild
 [submodule "code/ge"]
 	path = code/ge
 	url = https://github.com/mellinoe/ge

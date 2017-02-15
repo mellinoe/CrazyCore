@@ -1,18 +1,18 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), dir.props))\dir.props" />
   <PropertyGroup>
     <OutputType>Library</OutputType>
-    <MinimumVisualStudioVersion>14.0</MinimumVisualStudioVersion>
     <AssemblyName>CrazyCore</AssemblyName>
     <RootNamespace>CrazyCore</RootNamespace>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <NuGetTargetMoniker>.NETStandard,Version=v1.6</NuGetTargetMoniker>
-    <OutputPath>$(AssetDir)\Managed</OutputPath>
+    <TargetFramework>netcoreapp1.1</TargetFramework>
+    <OutDir>$(AssetDir)\Managed</OutDir>
     <ProjectGuid>{0068F33A-64B0-4D95-A129-44A02B035503}</ProjectGuid>
+    <DisableImplicitFrameworkReferences>true</DisableImplicitFrameworkReferences>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <PackageTargetFallback>portable-net45+win8+wpa81</PackageTargetFallback>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' " />
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' " />
   <ItemGroup>
     <Compile Include="ActivationTarget.cs" />
     <Compile Include="AudioAutoPlay.cs" />
@@ -85,12 +85,10 @@
       <Name>BEPUutilities</Name>
       <Private>False</Private>
     </ProjectReference>
-    <None Include="project.json" />
     <ProjectReference Include="..\..\ge\src\Engine\Engine.csproj">
       <Project>{9bfba3a1-21d4-4cbd-b0e1-a4f3ab80fd30}</Project>
       <Name>Engine</Name>
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
-  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), dir.targets))\dir.targets" />
 </Project>
