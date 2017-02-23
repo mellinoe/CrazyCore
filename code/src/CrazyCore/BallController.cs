@@ -40,6 +40,8 @@ namespace CrazyCore
 
         public bool RequireMouseClickForCamera { get; set; } = false;
 
+        public bool ForceDisable {get;set; } = false;
+
         private float _followDistance = 10f;
         private float _minFollowDistance = 5f;
         private float _maxFollowDistance = 25f;
@@ -68,6 +70,7 @@ namespace CrazyCore
 
         public override void Update(float deltaSeconds)
         {
+            if (ForceDisable) return;
             ReadOnlyList<CollidablePairHandler> currentPairs = _ballCollider.Entity.CollisionInformation.Pairs;
             IsOnGround = currentPairs.Count > 0;
 

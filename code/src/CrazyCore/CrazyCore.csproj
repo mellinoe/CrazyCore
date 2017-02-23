@@ -10,55 +10,8 @@
     <ProjectGuid>{0068F33A-64B0-4D95-A129-44A02B035503}</ProjectGuid>
     <DisableImplicitFrameworkReferences>true</DisableImplicitFrameworkReferences>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
     <PackageTargetFallback>portable-net45+win8+wpa81</PackageTargetFallback>
   </PropertyGroup>
-  <ItemGroup>
-    <Compile Include="ActivationTarget.cs" />
-    <Compile Include="AudioAutoPlay.cs" />
-    <Compile Include="AudioManualPlay.cs" />
-    <Compile Include="AutoJoint.cs" />
-    <Compile Include="BallAudio.cs" />
-    <Compile Include="BallController.cs" />
-    <Compile Include="BallPowerup.cs" />
-    <Compile Include="BallState.cs" />
-    <Compile Include="BoostPad.cs" />
-    <Compile Include="CameraSeeThrough.cs" />
-    <Compile Include="CharacterMarker.cs" />
-    <Compile Include="CinematicCamera.cs" />
-    <Compile Include="Collectible.cs" />
-    <Compile Include="CursorHider.cs" />
-    <Compile Include="DelegateMenu.cs" />
-    <Compile Include="Elevator.cs" />
-    <Compile Include="GravityChanger.cs" />
-    <Compile Include="CrazyCorePreferences.cs" />
-    <Compile Include="GravityInverter.cs" />
-    <Compile Include="LinearBoostPowerup.cs" />
-    <Compile Include="JumpPowerup.cs" />
-    <Compile Include="LevelLoadTrigger.cs" />
-    <Compile Include="Magnet.cs" />
-    <Compile Include="MagnetPowerup.cs" />
-    <Compile Include="MagnetState.cs" />
-    <Compile Include="MainMenu.cs" />
-    <Compile Include="MenuGlobals.cs" />
-    <Compile Include="MessageActivationTarget.cs" />
-    <Compile Include="ObjectTrackingZone.cs" />
-    <Compile Include="ParticleVacuumEffect.cs" />
-    <Compile Include="PathFollowingPlatform.cs" />
-    <Compile Include="PauseMenu.cs" />
-    <Compile Include="PersistentStorage.cs" />
-    <Compile Include="PlayerStageProgress.cs" />
-    <Compile Include="PointCollector.cs" />
-    <Compile Include="Rotater.cs" />
-    <Compile Include="StageCompletionInfo.cs" />
-    <Compile Include="StageCompletionTrigger.cs" />
-    <Compile Include="TempTransparency.cs" />
-    <Compile Include="TimeDisplay.cs" />
-    <Compile Include="TransformFollow.cs" />
-    <Compile Include="TriggerActivator.cs" />
-    <Compile Include="TriggerDelegateInvoker.cs" />
-    <Compile Include="TriggerInvokerBase.cs" />
-  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\ge\ext\imgui.net\src\ImGui.NET\ImGui.NET.csproj">
       <Project>{2665014F-0FEC-4268-8F77-7B029921AB09}</Project>
