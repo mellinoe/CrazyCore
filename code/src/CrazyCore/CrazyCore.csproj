@@ -1,12 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), dir.props))\dir.props" />
   <PropertyGroup>
     <OutputType>Library</OutputType>
     <AssemblyName>CrazyCore</AssemblyName>
     <RootNamespace>CrazyCore</RootNamespace>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <TargetFramework>netcoreapp1.1</TargetFramework>
-    <OutDir>$(AssetDir)\Managed</OutDir>
+    <GameAssetOutputDir>$(AssetDir)\Managed</GameAssetOutputDir>
     <ProjectGuid>{0068F33A-64B0-4D95-A129-44A02B035503}</ProjectGuid>
     <DisableImplicitFrameworkReferences>true</DisableImplicitFrameworkReferences>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
@@ -91,4 +90,8 @@
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
+  <Target Name="CopyToGameAssetDir" AfterTargets="CopyFilesToOutputDirectory">
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(GameAssetOutputDir)" />
+    <Copy SourceFiles="$(TargetPath.Replace('.dll', '.pdb'))" DestinationFolder="$(GameAssetOutputDir)" />
+  </Target>
 </Project>
